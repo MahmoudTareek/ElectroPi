@@ -1,5 +1,6 @@
 // Components file I made to avoid code repetition and make the code more organized and reusable. Moreover it makes it easier to maintain and update the code in the future.
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
+import 'package:electropi/modules/Project_Details_Screen.dart';
 import 'package:flutter/material.dart';
 // import 'package:electropi/modules/details/detail_screen.dart';
 
@@ -222,4 +223,113 @@ int hour({required articleTime}) {
   // Return the difference in hours as an integer
   int hoursAgo = diff.inHours;
   return hoursAgo;
+}
+
+class ProjectCard extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final String status;
+  final IconData icon;
+  final Color iconColor;
+
+  const ProjectCard({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.status,
+    required this.icon,
+    required this.iconColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        // Navigate to project details screen when the card is tapped
+        navigateTo(context, ProjectDetailsScreen());
+      },
+      child: Container(
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius:
+              BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 10,
+              offset: Offset(0, 3),
+            )
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              height: 50,
+              width: 50,
+              decoration: BoxDecoration(
+                color: iconColor.withOpacity(.15),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                icon,
+                color: iconColor,
+              ),
+            ),
+      
+            const SizedBox(width: 14),
+      
+            Expanded(
+              child: Column(
+                crossAxisAlignment:
+                    CrossAxisAlignment.start,
+                children: [
+      
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight:
+                          FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+      
+                  const SizedBox(height: 5),
+      
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+      
+            Container(
+              padding:
+                  const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 6,
+              ),
+              decoration: BoxDecoration(
+                color:
+                    status == "Active" ? Colors.green.withOpacity(.15) : status == "Pending" ? Colors.orange.withOpacity(.15) : Colors.blue.withOpacity(.15),
+                borderRadius:
+                    BorderRadius.circular(30),
+              ),
+              child: Text(
+                status,
+                style: TextStyle(
+                  color: status == "Active" ? Colors.green : status == "Pending" ? Colors.orange : Colors.blue,
+                  fontWeight:
+                      FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

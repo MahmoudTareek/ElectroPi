@@ -1,12 +1,12 @@
 //Cubit page for managing the state of the app and fetching functions. It uses the Dio package for network requests and Fluttertoast for displaying messages.
 import 'package:dio/dio.dart';
+import 'package:electropi/modules/Project_Screen.dart';
 import 'package:electropi/shared/network/local/cache_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:electropi/cubit/states.dart';
 // import 'package:electropi/modules/bookmarks/bookmarks_screen.dart';
-import 'package:electropi/modules/home_screen.dart';
 import 'package:electropi/modules/profile_screen.dart';
 // import 'package:electropi/modules/search/search_screen.dart';
 import 'package:electropi/shared/network/dio_helper.dart';
@@ -23,19 +23,19 @@ class ProjectCubit extends Cubit<ProjectStates> {
   // Bottom Navigation Bar Items and corresponding screens for the app's main navigation
   List<BottomNavigationBarItem> bottomItems = [
     BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: 'Home'),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.explore_outlined),
-      label: 'Explore',
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.bookmark_outline),
-      label: 'Bookmarks',
-    ),
+    // BottomNavigationBarItem(
+    //   icon: Icon(Icons.explore_outlined),
+    //   label: 'Explore',
+    // ),
+    // BottomNavigationBarItem(
+    //   icon: Icon(Icons.bookmark_outline),
+    //   label: 'Bookmarks',
+    // ),
     BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Profile'),
   ];
 
   List<Widget> screen = [
-    // HomeScreen(),
+    ProjectsScreen(),
     // SearchScreen(),
     // BookmarksScreen(),
     ProfileScreen(),
