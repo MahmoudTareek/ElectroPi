@@ -47,7 +47,7 @@ class EmptyProjectsWidget extends StatelessWidget {
             const SizedBox(height: 14),
 
             const Text(
-              "You don't have any projects.\nCreate your first project to get started.",
+              "You don't have any projects.",
               textAlign:
                   TextAlign.center,
               style: TextStyle(
@@ -56,40 +56,7 @@ class EmptyProjectsWidget extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 30),
-
-            SizedBox(
-              width: 180,
-              height: 52,
-              child: ElevatedButton.icon(
-                style:
-                    ElevatedButton.styleFrom(
-                  backgroundColor:
-                      primaryColor,
-                  shape:
-                      RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(
-                            14),
-                  ),
-                ),
-                onPressed: () {
-
-                  /// navigate to create project
-                },
-                icon: const Icon(
-                  Icons.add,
-                  color: Colors.white,
-                ),
-                label: const Text(
-                  "New Project",
-                  style: TextStyle(
-                    color:
-                        Colors.white,
-                  ),
-                ),
-              ),
-            ),
+            
           ],
         ),
       ),

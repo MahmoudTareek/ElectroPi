@@ -30,27 +30,19 @@ class _SplashScreenState extends State<SplashScreen> {
 
     final String? token = CacheHelper.getString(key: 'token');
 
-    Widget screen;
+    String route;
 
-    /// أول مرة
     if (!onboardingDone) {
-      screen = const OnBoardingScreen();
-    }
-    /// بعد الـ onboarding
-    else {
-      if (token != null && token.isNotEmpty) {
-        screen = NewsLayout();
-      } else {
-        screen = LoginScreen();
-      }
+      route = '/onboarding';
+    } else if (token != null && token.isNotEmpty) {
+      route = '/layout';
+    } else {
+      route = '/login';
     }
 
     if (!mounted) return;
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => screen),
-    );
+    Navigator.pushReplacementNamed(context, route);
   }
 
   @override
@@ -69,13 +61,13 @@ class _SplashScreenState extends State<SplashScreen> {
               /// IMAGE
               Image.asset(
                 'assets/images/Logo.png',
-              
+
                 color: Colors.white,
-              
+
                 width: 180,
-              
+
                 height: 180,
-              
+
                 fit: BoxFit.contain,
               ),
               const SizedBox(height: 50),

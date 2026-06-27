@@ -1,6 +1,8 @@
 //Cubit page for managing the state of the app and fetching functions. It uses the Dio package for network requests and Fluttertoast for displaying messages.
 import 'package:dio/dio.dart';
+import 'package:electropi/models/projects_model.dart';
 import 'package:electropi/modules/Project_Screen.dart';
+import 'package:electropi/shared/components.dart';
 import 'package:electropi/shared/network/local/cache_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -51,7 +53,18 @@ class ProjectCubit extends Cubit<ProjectStates> {
     emit(LoginLoadingState());
 
     try {
-      // 1- هات اليوزر من الإيميل
+      // Local user
+      String? savedEmail = CacheHelper.getString(key: 'email');
+
+      String? savedPassword = CacheHelper.getString(key: 'password');
+
+      if (savedEmail == email && savedPassword == password) {
+        emit(LoginSuccessState());
+
+        return;
+      }
+
+      // DummyJSON users
       Response userResponse = await DioHelper.getData(
         url: 'users/search?q=$email',
       );
@@ -59,40 +72,26 @@ class ProjectCubit extends Cubit<ProjectStates> {
       List users = userResponse.data['users'];
 
       if (users.isEmpty) {
-        emit(LoginErrorState('Email not found'));
+        emit(LoginErrorState('Invalid credentials'));
 
         return;
       }
 
-      // 2- استخرج username
       String username = users[0]['username'];
 
-      // 3- Login بالـ username
       Response response = await DioHelper.postData(
         url: 'auth/login',
-
         data: {'username': username, 'password': password},
       );
 
-      // JWT
-      String token = response.data['accessToken'];
-
-      await CacheHelper.saveString(key: 'token', value: token);
-
       await CacheHelper.saveString(
-        key: 'username',
-        value: response.data['username'],
+        key: 'token',
+        value: response.data['accessToken'],
       );
-
-      await CacheHelper.saveString(key: 'email', value: response.data['email']);
-
-      print('TOKEN => $token');
 
       emit(LoginSuccessState());
     } catch (e) {
-      print(e);
-
-      emit(LoginErrorState('Login Failed'));
+      emit(LoginErrorState(e.toString()));
     }
   }
 
@@ -120,56 +119,79 @@ class ProjectCubit extends Cubit<ProjectStates> {
     }
   }
 
-  // List to store all news articles fetched from the API
-  // List<dynamic> allNews = [];
-  // void getAllNews() {
-  //   emit(NewsGetAllNewsLoadingState());
-  //   DioHelper.getData(
-  //         url: 'v2/everything',
-  //         // query: {'q': 'news', 'apiKey': apiKey},
-  //       )
-  //       .then((value) {
-  //         print(value.data);
-  //         allNews = value.data['articles'];
-  //         emit(NewsGetAllNewsSuccessState());
-  //       })
-  //       .catchError((error) {
-  //         print(error.toString());
-  //         emit(NewsGetAllNewsErrorState(error.toString()));
-  //       });
-  // }
+  Future updateProfile({
+  required String username,
+  required String email,
+}) async {
 
-  // // List to store search results fetched from the API based on user keywords
-  // List<dynamic> search = [];
-  // void getSearch(String value) {
-  //   emit(NewsGetSearchLoadingState());
-  //   DioHelper.getData(
-  //         url: 'v2/everything',
-  //         // query: {'q': '$value', 'apiKey': apiKey},
-  //       )
-  //       .then((value) {
-  //         search = value.data['articles'];
-  //         print(search[0]['title']);
-  //         emit(NewsGetSearchSuccessState());
-  //       })
-  //       .catchError((error) {
-  //         emit(NewsGetSearchErrorState(error.toString()));
-  //       });
-  // }
+  emit(UpdateProfileLoadingState());
 
-  // // Function to fetch news articles based on a specific category from the API
-  // void getNewsByCategory(String category) {
-  //   emit(NewsGetAllNewsLoadingState());
-  //   DioHelper.getData(
-  //         url: 'v2/top-headlines',
-  //         // query: {'category': category, 'country': 'us', 'apiKey': apiKey},
-  //       )
-  //       .then((value) {
-  //         allNews = value.data['articles'];
-  //         emit(NewsGetAllNewsSuccessState());
-  //       })
-  //       .catchError((error) {
-  //         emit(NewsGetAllNewsErrorState(error.toString()));
-  //       });
-  // }
+  try {
+
+    String? token =
+        CacheHelper.getString(
+      key: 'token',
+    );
+
+    // لو داخل من API
+    if (token != null) {
+
+      try {
+
+        await DioHelper.putData(
+          url: 'users/1',
+          data: {
+            "username": username,
+            "email": email,
+          },
+        );
+
+      } catch (_) {}
+
+    }
+
+    // حدث محلي عشان يظهر
+    await CacheHelper.saveString(
+      key: 'username',
+      value: username,
+    );
+
+    await CacheHelper.saveString(
+      key: 'email',
+      value: email,
+    );
+
+    emit(UpdateProfileSuccessState());
+
+  } catch (e) {
+
+    emit(
+      UpdateProfileErrorState(
+        e.toString(),
+      ),
+    );
+  }
+}
+
+  List<Widget> filteredProjects = [];
+  void initProjects() {
+    filteredProjects = List.from(projects);
+
+    emit(SearchProjectSuccessState());
+  }
+
+  void searchProjects(String value) {
+    emit(SearchProjectLoadingState());
+    if (value.isEmpty) {
+      filteredProjects = List.from(projects);
+    } else {
+      filteredProjects = projects.where((project) {
+        return (project as ProjectCard).title.toLowerCase().contains(
+          value.toLowerCase(),
+        );
+      }).toList();
+    }
+
+    emit(SearchProjectSuccessState());
+  }
 }

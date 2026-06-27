@@ -2,10 +2,7 @@
 // import 'package:electropi/layout/news_layout.dart';
 import 'package:electropi/cubit/cubit.dart';
 import 'package:electropi/cubit/states.dart';
-import 'package:electropi/layout/layout.dart';
-import 'package:electropi/modules/Registration_Screen.dart';
 import 'package:electropi/shared/components.dart';
-import 'package:electropi/shared/network/local/cache_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -29,11 +26,9 @@ class _LoginScreenState extends State<LoginScreen> {
     return BlocConsumer<ProjectCubit, ProjectStates>(
       listener: (context, state) {
         if (state is LoginSuccessState) {
-          Navigator.pushAndRemoveUntil(
+          Navigator.pushNamedAndRemoveUntil(
             context,
-
-            MaterialPageRoute(builder: (_) => NewsLayout()),
-
+            '/layout',
             (route) => false,
           );
         }
@@ -173,7 +168,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           alignment: Alignment.centerRight,
                           child: TextButton(
                             onPressed: () {
-                              navigateTo(context, RegisterScreen());
+                              Navigator.pushNamed(context, '/register');
                             },
                             child: const Text(
                               'Register',

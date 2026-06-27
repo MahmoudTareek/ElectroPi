@@ -1,5 +1,10 @@
 import 'package:electropi/cubit/cubit.dart';
+import 'package:electropi/layout/layout.dart';
+import 'package:electropi/modules/Login_Screen.dart';
 import 'package:electropi/modules/OnBoarding_Screen.dart';
+import 'package:electropi/modules/Profile_Screen.dart';
+import 'package:electropi/modules/Project_Details_Screen.dart';
+import 'package:electropi/modules/Registration_Screen.dart';
 import 'package:electropi/modules/Splash_Screen.dart';
 import 'package:electropi/shared/network/dio_helper.dart';
 import 'package:electropi/shared/network/local/cache_helper.dart';
@@ -13,9 +18,7 @@ Future<void> main() async {
 
   DioHelper.init();
 
-  runApp(
-    const MyApp(),
-  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -26,10 +29,23 @@ class MyApp extends StatelessWidget {
     return BlocProvider(
       create: (_) => ProjectCubit(),
 
-      child: const MaterialApp(
+      child: MaterialApp(
         debugShowCheckedModeBanner: false,
+        initialRoute: '/splashRoute',
 
-        home: SplashScreen(),
+        routes: {
+          '/login': (context) => LoginScreen(),
+          '/register': (context) => RegisterScreen(),
+          '/layout': (context) => ProjectLayout(),
+          '/onboarding': (context) => OnBoardingScreen(),
+          '/profile': (context) => ProfileScreen(),
+          '/projectDetails': (context) {
+            final title = ModalRoute.of(context)!.settings.arguments as String?;
+            return ProjectDetailsScreen(projectTitle: title);
+          },
+        },
+
+        home: const SplashScreen(),
         // home: OnBoardingScreen(),
       ),
     );

@@ -2,12 +2,9 @@
 // import 'package:electropi/layout/news_layout.dart';
 import 'package:electropi/cubit/cubit.dart';
 import 'package:electropi/cubit/states.dart';
-import 'package:electropi/layout/layout.dart';
-import 'package:electropi/modules/Login_Screen.dart';
 import 'package:electropi/shared/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -31,11 +28,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return BlocConsumer<ProjectCubit, ProjectStates>(
       listener: (context, state) {
         if (state is RegisterSuccessState) {
-          Navigator.pushReplacement(
-            context,
-
-            MaterialPageRoute(builder: (_) => LoginScreen()),
-          );
+          Navigator.pushReplacementNamed(context, '/login');
         }
       },
       builder: (context, state) {
@@ -151,8 +144,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       },
                       isPassword: isPassword,
 
-
-                        validate: (String? value) {
+                      validate: (String? value) {
                         if (value == null || value.isEmpty) {
                           return 'Password is required';
                         }
@@ -179,7 +171,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           alignment: Alignment.centerRight,
                           child: TextButton(
                             onPressed: () {
-                              navigateTo(context, LoginScreen());
+                              Navigator.pushNamed(context, '/login');
                             },
                             child: const Text(
                               'Sign In',

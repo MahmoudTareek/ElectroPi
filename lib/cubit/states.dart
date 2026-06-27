@@ -25,25 +25,28 @@ class RegisterErrorState extends ProjectStates {
   RegisterErrorState(this.error);
 }
 
+class SearchProjectLoadingState extends ProjectStates {}
 
+class SearchProjectSuccessState extends ProjectStates {}
 
+class SearchProjectErrorState extends ProjectStates {
+  final String error;
 
-// class NewsGetAllNewsLoadingState extends ProjectStates {}
+  SearchProjectErrorState(this.error);
+}
 
-// class NewsGetAllNewsSuccessState extends ProjectStates {}
+class UpdateProfileLoadingState
+    extends ProjectStates {}
 
-// class NewsGetAllNewsErrorState extends ProjectStates {
-//   late final String error;
+class UpdateProfileSuccessState
+    extends ProjectStates {}
 
-//   NewsGetAllNewsErrorState(this.error);
-// }
+class UpdateProfileErrorState
+    extends ProjectStates {
 
-// class NewsGetSearchLoadingState extends ProjectStates {}
+  final String error;
 
-// class NewsGetSearchSuccessState extends ProjectStates {}
-
-// class NewsGetSearchErrorState extends ProjectStates {
-//   late final String error;
-
-//   NewsGetSearchErrorState(this.error);
-// }
+  UpdateProfileErrorState(
+    this.error,
+  );
+}

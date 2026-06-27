@@ -1,6 +1,22 @@
 import 'package:electropi/shared/components.dart';
 import 'package:flutter/material.dart';
 
+class ProjectModel {
+  final String title;
+  final String subtitle;
+  final String status;
+  final IconData icon;
+  final Color iconColor;
+
+  ProjectModel({
+    required this.title,
+    required this.subtitle,
+    required this.status,
+    required this.icon,
+    required this.iconColor,
+  });
+}
+
 
 final List<Widget> projects = [
     ProjectCard(

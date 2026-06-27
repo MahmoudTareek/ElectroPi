@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:electropi/models/on_boarding_model.dart';
-import 'package:electropi/modules/Login_Screen.dart';
 import 'package:electropi/shared/components.dart';
 import 'package:electropi/shared/network/local/cache_helper.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -21,10 +20,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   Future<void> submit() async {
     await CacheHelper.saveData(key: 'onboarding_done', value: true);
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => LoginScreen()),
-    );
+    Navigator.pushReplacementNamed(context, '/login');
   }
 
   @override
@@ -83,7 +79,10 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                     },
                     child: Text(
                       'Back',
-                      style: TextStyle(color: primaryColor.withOpacity(0.5), fontSize: 16),
+                      style: TextStyle(
+                        color: primaryColor.withOpacity(0.5),
+                        fontSize: 16,
+                      ),
                     ),
                   ),
 

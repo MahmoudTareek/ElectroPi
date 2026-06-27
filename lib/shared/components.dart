@@ -1,6 +1,5 @@
 // Components file I made to avoid code repetition and make the code more organized and reusable. Moreover it makes it easier to maintain and update the code in the future.
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
-import 'package:electropi/modules/Project_Details_Screen.dart';
 import 'package:flutter/material.dart';
 // import 'package:electropi/modules/details/detail_screen.dart';
 
@@ -58,143 +57,81 @@ Widget defaultFormField({
   VoidCallback? suffixPrssed,
 
   bool isClickable = true,
-}) =>
-    TextFormField(
-      controller: controller,
+}) => TextFormField(
+  controller: controller,
 
-      keyboardType: type,
+  keyboardType: type,
 
-      obscureText: isPassword,
+  obscureText: isPassword,
 
-      enabled: isClickable,
+  enabled: isClickable,
 
-      onFieldSubmitted: onSubmit,
+  onFieldSubmitted: onSubmit,
 
-      onChanged: onChange,
+  onChanged: onChange,
 
-      onTap: onTap,
+  onTap: onTap,
 
-      validator: validate,
+  validator: validate,
 
-      decoration: InputDecoration(
+  decoration: InputDecoration(
+    /// شكل الخلفية
+    filled: true,
+    fillColor: Colors.white,
 
-        /// شكل الخلفية
-        filled: true,
-        fillColor: Colors.white,
+    /// النص اللي فوق
+    labelText: label,
 
-        /// النص اللي فوق
-        labelText: label,
+    floatingLabelBehavior: FloatingLabelBehavior.auto,
 
-        floatingLabelBehavior:
-            FloatingLabelBehavior.auto,
+    labelStyle: TextStyle(color: Colors.grey[500], fontSize: 14),
 
-        labelStyle: TextStyle(
-          color: Colors.grey[500],
-          fontSize: 14,
-        ),
+    /// الايقونة
+    prefixIcon: prefix != null
+        ? Padding(
+            padding: const EdgeInsets.only(left: 8),
+            child: Icon(prefix, color: Colors.grey[700]),
+          )
+        : null,
 
-        /// الايقونة
-        prefixIcon: prefix != null
-            ? Padding(
-                padding:
-                    const EdgeInsets.only(
-                  left: 8,
-                ),
-                child: Icon(
-                  prefix,
-                  color: Colors.grey[700],
-                ),
-              )
-            : null,
+    prefixIconConstraints: const BoxConstraints(minWidth: 50),
 
-        prefixIconConstraints:
-            const BoxConstraints(
-          minWidth: 50,
-        ),
+    suffixIcon: suffix != null
+        ? IconButton(onPressed: suffixPrssed, icon: Icon(suffix))
+        : null,
 
-        suffixIcon: suffix != null
-            ? IconButton(
-                onPressed:
-                    suffixPrssed,
-                icon: Icon(
-                  suffix,
-                ),
-              )
-            : null,
+    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
 
-        contentPadding:
-            const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 24,
-        ),
+    errorMaxLines: 3,
 
-        errorMaxLines: 3,
+    /// العادي
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(18),
 
-        /// العادي
-        border:
-            OutlineInputBorder(
-          borderRadius:
-              BorderRadius.circular(
-            18,
-          ),
+      borderSide: BorderSide(color: Colors.grey.shade300),
+    ),
 
-          borderSide:
-              BorderSide(
-            color:
-                Colors.grey.shade300,
-          ),
-        ),
+    /// لما يركز
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(18),
 
-        /// لما يركز
-        focusedBorder:
-            OutlineInputBorder(
-          borderRadius:
-              BorderRadius.circular(
-            18,
-          ),
+      borderSide: BorderSide(color: primaryColor, width: 1.5),
+    ),
 
-          borderSide:
-              BorderSide(
-            color:
-                primaryColor,
-            width: 1.5,
-          ),
-        ),
+    /// بدون فوكس
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(18),
 
-        /// بدون فوكس
-        enabledBorder:
-            OutlineInputBorder(
-          borderRadius:
-              BorderRadius.circular(
-            18,
-          ),
+      borderSide: BorderSide(color: Colors.grey.shade300),
+    ),
 
-          borderSide:
-              BorderSide(
-            color:
-                Colors.grey.shade300,
-          ),
-        ),
+    errorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(18),
 
-        errorBorder:
-            OutlineInputBorder(
-          borderRadius:
-              BorderRadius.circular(
-            18,
-          ),
-
-          borderSide:
-              const BorderSide(
-            color:
-                Colors.red,
-          ),
-        ),
-      ),
-    );
-
-// Function to navigate to a new screen, used in onboarding screen to go to login screen and in article item to go to detail screen
-Future<dynamic> navigateTo(context, widget) =>
-    Navigator.push(context, MaterialPageRoute(builder: (context) => widget));
+      borderSide: const BorderSide(color: Colors.red),
+    ),
+  ),
+);
 
 // Widget to build each article item in the list, used in articleBuilder function
 Widget buildArticleItem(article, context) => InkWell(
@@ -354,8 +291,7 @@ class ProjectCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigate to project details screen when the card is tapped
-        navigateTo(context, ProjectDetailsScreen(projectTitle: title));
+        Navigator.pushNamed(context, '/projectDetails', arguments: title);
       },
       child: Container(
         padding: const EdgeInsets.all(18),

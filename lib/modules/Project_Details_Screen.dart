@@ -65,7 +65,7 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
           backgroundColor: primaryColor,
-          foregroundColor: secondaryColor,
+          foregroundColor: Colors.white,
           onPressed: () {
             showModalBottomSheet(
               context: context,
