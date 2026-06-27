@@ -1,11 +1,8 @@
-// Profile Screen with user information and logout functionality, update info feature.
-// It was in the Figma design, I added some features as update button to show a friendly message to user, logout button to return back to onboarding screen.
 import 'package:electropi/modules/Login_Screen.dart';
 import 'package:electropi/shared/network/local/cache_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:electropi/cubit/cubit.dart';
-// import 'package:electropi/modules/onBoarding/on_boarding_screen.dart';
 import 'package:electropi/shared/components.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -13,134 +10,229 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Controllers for user input fields
     var cubit = ProjectCubit.get(context);
-    String? userName = CacheHelper.getString(key: 'username');
 
+    String? userName = CacheHelper.getString(key: 'username');
     String? email = CacheHelper.getString(key: 'email');
 
-    TextEditingController userNameController = TextEditingController(
-      text: userName,
-    );
+    TextEditingController userNameController =
+        TextEditingController(text: userName);
 
-    TextEditingController emailController = TextEditingController(text: email);
-    return Stack(
-      children: [
-        Scaffold(
-          backgroundColor: Colors.white,
-          body: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Profile image for user
-                  Center(
-                    child: CircleAvatar(
-                      radius: 50,
-                      backgroundImage: // AssetImage('assets/images/profile_image.png'),
-                          NetworkImage(
-                                'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-                              )
-                              as ImageProvider<Object>?,
-                    ),
-                  ),
-                  SizedBox(height: 30),
-                  // User name input field
-                  defaultFormField(
-                    context: context,
-                    controller: userNameController,
-                    type: TextInputType.text,
+    TextEditingController emailController =
+        TextEditingController(text: email);
 
-                    validate: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your name';
-                      }
+    return Scaffold(
+      backgroundColor: const Color(0xffF7F9FC),
 
-                      return null;
-                    },
-
-                    label: 'User Name',
-
-                    prefix: Icons.person,
-                  ),
-                  SizedBox(height: 20),
-                  // Email input field
-                  defaultFormField(
-                    context: context,
-                    controller: emailController,
-                    type: TextInputType.emailAddress,
-
-                    validate: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your email';
-                      }
-
-                      if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                        return 'Please enter a valid email address';
-                      }
-
-                      return null;
-                    },
-
-                    label: 'Email',
-
-                    prefix: Icons.email,
-                  ),
-                  SizedBox(height: 30),
-                  // Row with Update and Logout buttons
-                  Row(
-                    children: [
-                      Expanded(
-                        child: defaultButton(
-                          function: () {
-                            // Show a toast message on successful update
-                            Fluttertoast.showToast(
-                              msg: "Your Information Updated Successfully",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.BOTTOM,
-                              timeInSecForIosWeb: 1,
-                              backgroundColor: Colors.green,
-                              textColor: Colors.white,
-                              fontSize: 16.0,
-                            );
-                          },
-                          text: 'Update',
-                          background: Colors.blue,
-                          radius: 50.0,
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      // Logout button to navigate back to onboarding screen
-                      Expanded(
-                        child: defaultButton(
-                          function: () async {
-                            // Reset the bottom navigation index to 0 (home) on logout to open on it after login again, and navigate to onboarding screen
-                            cubit.currentIndex = 0;
-                            // navigateTo is a custom function defined in components.dart to navigate to a new screen to be easier to use everywhere in the app without repeating the same code again and again
-                            // navigateTo(context, LoginScreen());
-                            await CacheHelper.removeData(key: 'token');
-                            userNameController.clear();
-                            emailController.clear();
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(builder: (_) => LoginScreen()),
-                              (route) => false,
-                            );
-                          },
-                          text: 'Logout',
-                          background: Colors.red,
-                          radius: 50.0,
-                        ),
-                      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              /// Header
+              Container(
+                height: 260,
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      primaryColor,
+                      secondaryColor,
                     ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                ],
+                  borderRadius: BorderRadius.vertical(
+                    bottom: Radius.circular(35),
+                  ),
+                ),
+
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                      ),
+
+                      child: CircleAvatar(
+                        radius: 55,
+                        backgroundImage: NetworkImage(
+                          'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: 16),
+
+                    Text(
+                      userName ?? "Guest",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    SizedBox(height: 6),
+
+                    Text(
+                      email ?? "",
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
+
+              Padding(
+                padding: const EdgeInsets.all(22),
+
+                child: Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(20),
+
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(25),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 15,
+                            offset: Offset(0, 6),
+                          ),
+                        ],
+                      ),
+
+                      child: Column(
+                        children: [
+                          defaultFormField(
+                            context: context,
+                            controller: userNameController,
+                            type: TextInputType.name,
+                            label: "User Name",
+                            prefix: Icons.person_outline,
+
+                            validate: (value) {
+                              if (value!.isEmpty) {
+                                return "Please enter your name";
+                              }
+                              return null;
+                            },
+                          ),
+
+                          SizedBox(height: 20),
+
+                          defaultFormField(
+                            context: context,
+                            controller: emailController,
+                            type: TextInputType.emailAddress,
+                            label: "Email",
+                            prefix: Icons.email_outlined,
+
+                            validate: (value) {
+                              if (value!.isEmpty) {
+                                return "Please enter email";
+                              }
+                              return null;
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(height: 35),
+
+                    /// Update Button
+                    SizedBox(
+                      width: double.infinity,
+                      height: 58,
+
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: primaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                        ),
+
+                        onPressed: () {
+                          Fluttertoast.showToast(
+                            msg:
+                                "Your Information Updated Successfully",
+                            backgroundColor: Colors.green,
+                          );
+                        },
+
+                        child: Text(
+                          "Update Profile",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: 16),
+
+                    /// Logout
+                    SizedBox(
+                      width: double.infinity,
+                      height: 58,
+
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          side:
+                              BorderSide(color: Colors.red),
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(18),
+                          ),
+                        ),
+
+                        onPressed: () async {
+                          cubit.currentIndex = 0;
+
+                          await CacheHelper.removeData(
+                            key: 'token',
+                          );
+
+                          userNameController.clear();
+                          emailController.clear();
+
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  LoginScreen(),
+                            ),
+                            (route) => false,
+                          );
+                        },
+
+                        child: Text(
+                          "Logout",
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
-      ],
+      ),
     );
   }
 }
