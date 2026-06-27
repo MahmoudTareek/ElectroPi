@@ -19,22 +19,18 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   bool isFirst = true;
 
   Future<void> submit() async {
-    await CacheHelper.saveData(
-      key: 'onBoarding',
-      value: true,
-    );
+    await CacheHelper.saveData(key: 'onboarding_done', value: true);
 
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(
-        builder: (context) => LoginScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => LoginScreen()),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Column(
         children: [
           Expanded(
@@ -66,7 +62,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
                   effect: const ScrollingDotsEffect(
                     dotColor: Colors.grey,
-                    activeDotColor: Colors.blue,
+                    activeDotColor: primaryColor,
                     dotHeight: 10,
                     dotWidth: 10,
                     spacing: 5,
@@ -81,28 +77,21 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   TextButton(
                     onPressed: () {
                       boardController.previousPage(
-                        duration: const Duration(
-                          milliseconds: 400,
-                        ),
+                        duration: const Duration(milliseconds: 400),
                         curve: Curves.easeInOut,
                       );
                     },
-
                     child: Text(
                       'Back',
-                      style: TextStyle(
-                        color: Colors.grey[500],
-                        fontSize: 16,
-                      ),
+                      style: TextStyle(color: primaryColor.withOpacity(0.5), fontSize: 16),
                     ),
                   ),
 
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: primaryColor,
                     shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
 
@@ -111,9 +100,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       submit();
                     } else {
                       boardController.nextPage(
-                        duration: const Duration(
-                          milliseconds: 500,
-                        ),
+                        duration: const Duration(milliseconds: 500),
                         curve: Curves.easeInOut,
                       );
                     }
@@ -126,13 +113,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                     ),
 
                     child: Text(
-                      isLast
-                          ? 'Get Started'
-                          : 'Next',
+                      isLast ? 'Get Started' : 'Next',
 
-                      style: const TextStyle(
-                        color: Colors.white,
-                      ),
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                 ),
@@ -146,30 +129,31 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
   Widget buildBoardingItem(BoardingModel model) {
     return Column(
-      crossAxisAlignment:
-          CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
 
       children: [
         Expanded(
-          flex: 4,
+          flex: 3,
 
-          child: Image.asset(
-            model.image,
-            width: double.infinity,
-            fit: BoxFit.cover,
+          child: Center(
+            child: Image.asset(
+              model.image,
+
+              width: 420,
+
+              height: 420,
+
+              fit: BoxFit.contain,
+            ),
           ),
         ),
 
         Expanded(
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(
-              horizontal: 20,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
 
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
 
               children: [
                 Text(
@@ -177,20 +161,13 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
                   style: const TextStyle(
                     fontSize: 24,
-                    fontWeight:
-                        FontWeight.bold,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
 
                 const SizedBox(height: 8),
 
-                Text(
-                  model.body,
-
-                  style: const TextStyle(
-                    fontSize: 14,
-                  ),
-                ),
+                Text(model.body, style: const TextStyle(fontSize: 14)),
               ],
             ),
           ),

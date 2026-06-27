@@ -27,6 +27,7 @@ class ProfileScreen extends StatelessWidget {
     return Stack(
       children: [
         Scaffold(
+          backgroundColor: Colors.white,
           body: Padding(
             padding: const EdgeInsets.all(20.0),
             child: SingleChildScrollView(
@@ -39,8 +40,9 @@ class ProfileScreen extends StatelessWidget {
                       radius: 50,
                       backgroundImage: // AssetImage('assets/images/profile_image.png'),
                           NetworkImage(
-                        'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-                      ) as ImageProvider<Object>?,
+                                'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
+                              )
+                              as ImageProvider<Object>?,
                     ),
                   ),
                   SizedBox(height: 30),
@@ -49,14 +51,17 @@ class ProfileScreen extends StatelessWidget {
                     context: context,
                     controller: userNameController,
                     type: TextInputType.text,
-                    // validation for user name
+
                     validate: (value) {
-                      if (value.isEmpty) {
+                      if (value == null || value.isEmpty) {
                         return 'Please enter your name';
                       }
+
                       return null;
                     },
+
                     label: 'User Name',
+
                     prefix: Icons.person,
                   ),
                   SizedBox(height: 20),
@@ -64,19 +69,22 @@ class ProfileScreen extends StatelessWidget {
                   defaultFormField(
                     context: context,
                     controller: emailController,
-                    type: TextInputType.text,
-                    // validation for email
+                    type: TextInputType.emailAddress,
+
                     validate: (value) {
-                      if (value.isEmpty) {
+                      if (value == null || value.isEmpty) {
                         return 'Please enter your email';
-                      } else if (!RegExp(
-                        r'^[^@]+@[^@]+\.[^@]+',
-                      ).hasMatch(value)) {
+                      }
+
+                      if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
                         return 'Please enter a valid email address';
                       }
+
                       return null;
                     },
+
                     label: 'Email',
+
                     prefix: Icons.email,
                   ),
                   SizedBox(height: 30),

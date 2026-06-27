@@ -40,10 +40,11 @@ class _LoginScreenState extends State<LoginScreen> {
       },
       builder: (context, state) {
         return Scaffold(
+          backgroundColor: Colors.white,
           body: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.only(
-                top: 60.0,
+                top: 100.0,
                 left: 20.0,
                 right: 20.0,
               ),
@@ -65,113 +66,85 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: TextStyle(
                         fontSize: 40.0,
                         fontWeight: FontWeight.bold,
-                        color: Colors.blue,
+                        color: primaryColor,
                       ),
                     ),
                     const SizedBox(height: 10.0),
                     Padding(
-                      padding: const EdgeInsets.only(right: 130.0),
+                      padding: const EdgeInsets.only(right: 150.0),
                       child: Text(
-                        'Welcome back you’ve been missed',
+                        'Login to continue to your account',
                         style: TextStyle(
                           fontSize: 18.0,
                           color: Colors.grey[600],
                         ),
                       ),
                     ),
-                    const SizedBox(height: 30.0),
-                    Row(
-                      children: [
-                        // Email label with asterisk for required field
-                        Text('Email', style: TextStyle(fontSize: 14.0)),
-                        Text(
-                          '*',
-                          style: TextStyle(fontSize: 16.0, color: Colors.red),
-                        ),
-                      ],
-                    ),
+                    const SizedBox(height: 50.0),
+
                     // Email input field using a custom defaultFormField widget from components.dart to be used across the app for consistency and reusability
                     defaultFormField(
                       context: context,
+
                       controller: emailController,
+
                       type: TextInputType.emailAddress,
-                      // Validation to ensure the email field is not empty
-                      validate: (String? value) {
-                        if (value!.isEmpty) {
-                          return 'Email must not be empty';
+
+                      label: 'Email',
+
+                      prefix: Icons.email_outlined,
+
+                      validate: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your email';
                         }
+
+                        if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                          return 'Please enter a valid email';
+                        }
+
                         return null;
                       },
                     ),
                     const SizedBox(height: 20.0),
-                    Row(
-                      children: [
-                        // Password label with asterisk for required field
-                        Text('Password', style: TextStyle(fontSize: 14.0)),
-                        Text(
-                          '*',
-                          style: TextStyle(fontSize: 16.0, color: Colors.red),
-                        ),
-                      ],
-                    ),
+
                     defaultFormField(
                       context: context,
+
                       controller: passwordController,
-                      // Suffix icon to toggle password visibility
+
+                      type: TextInputType.visiblePassword,
+
+                      label: 'Password',
+
+                      prefix: Icons.lock_outline,
+
+                      isPassword: isPassword,
+
                       suffix: isPassword
                           ? Icons.visibility
                           : Icons.visibility_off,
+
                       suffixPrssed: () {
                         setState(() {
                           isPassword = !isPassword;
                         });
                       },
-                      // Keyboard type for password input to be hidden password
-                      type: TextInputType.visiblePassword,
-                      // Obscure text for password field based on isPassword state
-                      isPassword: isPassword,
-                      // Validation to ensure the password field is not empty
-                      validate: (String? value) {
-                        if (value!.isEmpty) {
+
+                      validate: (value) {
+                        if (value == null || value.isEmpty) {
                           return 'Password must not be empty';
                         }
+
+                        if (value.length < 8) {
+                          return 'Password must be at least 8 characters';
+                        }
+
+                        return null;
                       },
                     ),
-                    const SizedBox(height: 20.0),
-                    Row(
-                      children: [
-                        // "Remember me" checkbox
-                        Checkbox(
-                          value: isRemember,
-                          onChanged: (value) {
-                            setState(() {
-                              isRemember = !isRemember;
-                            });
-                          },
-                          activeColor: Colors.blue,
-                        ),
-                        const Text(
-                          'Remember me',
-                          style: TextStyle(fontSize: 14.0),
-                        ),
-                        const Spacer(),
-                        // "Forgot Password?" link aligned to the right
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: () {},
-                            child: const Text(
-                              'Forgot Password?',
-                              style: TextStyle(
-                                fontSize: 14.0,
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20.0),
+
+                    const SizedBox(height: 50.0),
                     // Login button using a custom defaultButton widget from components.dart for consistency and reusability
                     defaultButton(
                       function: () {
@@ -203,10 +176,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               navigateTo(context, RegisterScreen());
                             },
                             child: const Text(
-                              'Sign Up',
+                              'Register',
                               style: TextStyle(
                                 fontSize: 14.0,
-                                color: Colors.blue,
+                                color: primaryColor,
                               ),
                             ),
                           ),

@@ -1,4 +1,5 @@
 // Layout for the news app using Bloc pattern and BottomNavigationBar for navigation between different screens of the app.
+import 'package:electropi/shared/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:electropi/cubit/cubit.dart';
@@ -32,8 +33,9 @@ class NewsLayout extends StatelessWidget {
               cubit.changeBottomNavBar(index);
             },
             items: cubit.bottomItems,
-            selectedItemColor: Colors.blue,
-            unselectedItemColor: Colors.grey,
+            selectedItemColor: primaryColor,
+            unselectedItemColor: secondaryColor,
+            backgroundColor: Colors.white,
             type: BottomNavigationBarType.fixed,
           ),
         );

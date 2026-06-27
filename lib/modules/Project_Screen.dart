@@ -1,71 +1,53 @@
+import 'package:electropi/models/projects_model.dart';
+import 'package:electropi/modules/Empty_Projects_Screen.dart';
 import 'package:flutter/material.dart';
 
 import '../shared/components.dart';
 
 class ProjectsScreen extends StatelessWidget {
-  const ProjectsScreen({super.key});
+  ProjectsScreen({super.key});
+
+  Future<void> refreshProjects() async {
+    await Future.delayed(const Duration(seconds: 2));
+
+    /// API Call Later
+    /// await ProjectsCubit.get(context).getProjects();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xff2563FF),
-        elevation: 6,
-        onPressed: () {},
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-          size: 30,
-        ),
-      ),
-
       body: Column(
         children: [
-
           /// HEADER
           Container(
             height: 250,
             width: double.infinity,
-            padding: const EdgeInsets.only(
-              top: 60,
-              left: 24,
-              right: 24,
-            ),
+            padding: const EdgeInsets.only(top: 60, left: 24, right: 24),
+
             decoration: const BoxDecoration(
-              color: Color(0xff001B66),
+              color: primaryColor,
+
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(30),
+
                 bottomRight: Radius.circular(30),
               ),
             ),
+
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+
               children: [
-
-                // Row(
-                //   mainAxisAlignment:
-                //       MainAxisAlignment.spaceBetween,
-                //   children: const [
-                //     Icon(
-                //       Icons.menu,
-                //       color: Colors.white,
-                //     ),
-                //     Icon(
-                //       Icons.notifications_none,
-                //       color: Colors.white,
-                //     ),
-                //   ],
-                // ),
-
-                // const SizedBox(height: 20),
-
                 const Text(
                   "My Projects",
+
                   style: TextStyle(
-                    color: Colors.white,
+                    color: secondaryColor,
+
                     fontSize: 30,
+
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -74,34 +56,32 @@ class ProjectsScreen extends StatelessWidget {
 
                 const Text(
                   "Here are your projects",
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 16,
-                  ),
+
+                  style: TextStyle(color: Colors.white70, fontSize: 16),
                 ),
 
                 const SizedBox(height: 25),
 
                 Container(
                   height: 55,
+
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius:
-                        BorderRadius.circular(14),
+
+                    borderRadius: BorderRadius.circular(14),
                   ),
-                  child: TextField(
+
+                  child: const TextField(
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      prefixIcon:
-                          const Icon(Icons.search),
-                      suffixIcon:
-                          const Icon(Icons.tune),
-                      hintText:
-                          "Search projects...",
-                      contentPadding:
-                          const EdgeInsets.only(
-                        top: 15,
-                      ),
+
+                      prefixIcon: Icon(Icons.search),
+
+                      suffixIcon: Icon(Icons.tune),
+
+                      hintText: "Search projects...",
+
+                      contentPadding: EdgeInsets.only(top: 15),
                     ),
                   ),
                 ),
@@ -109,54 +89,40 @@ class ProjectsScreen extends StatelessWidget {
             ),
           ),
 
-          /// LIST
+          /// CONTENT
           Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(20),
-              children: const [
+            child: RefreshIndicator(
+              color: const Color(0xff2563FF),
 
-                ProjectCard(
-                  title: "Website Redesign",
-                  subtitle:
-                      "Redesign marketing website",
-                  status: "Active",
-                  icon: Icons.web,
-                  iconColor: Colors.blue,
-                ),
+              onRefresh: refreshProjects,
 
-                SizedBox(height: 18),
+              child: projects.isEmpty
+                  /// EMPTY
+                  ? ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
 
-                ProjectCard(
-                  title: "Mobile App",
-                  subtitle:
-                      "Build cross platform app",
-                  status: "In Progress",
-                  icon: Icons.phone_android,
-                  iconColor: Colors.deepPurple,
-                ),
+                      children: const [
+                        SizedBox(height: 80),
 
-                SizedBox(height: 18),
+                        EmptyProjectsWidget(),
+                      ],
+                    )
+                  /// PROJECTS
+                  : ListView.builder(
+                      physics: const AlwaysScrollableScrollPhysics(),
 
-                ProjectCard(
-                  title: "API Integration",
-                  subtitle:
-                      "Integrate payment gateway",
-                  status: "Pending",
-                  icon: Icons.api,
-                  iconColor: Colors.amber,
-                ),
+                      padding: const EdgeInsets.all(20),
 
-                SizedBox(height: 18),
+                      itemCount: projects.length,
 
-                ProjectCard(
-                  title: "Dashboard",
-                  subtitle:
-                      "Admin dashboard development",
-                  status: "Active",
-                  icon: Icons.dashboard,
-                  iconColor: Colors.green,
-                ),
-              ],
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 18),
+
+                          child: projects[index],
+                        );
+                      },
+                    ),
             ),
           ),
         ],
@@ -164,4 +130,3 @@ class ProjectsScreen extends StatelessWidget {
     );
   }
 }
-

@@ -40,10 +40,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
       },
       builder: (context, state) {
         return Scaffold(
+          backgroundColor: Colors.white,
           body: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.only(
-                top: 60.0,
+                top: 100.0,
                 left: 20.0,
                 right: 20.0,
               ),
@@ -54,73 +55,66 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   children: [
                     // Greeting texts
                     const Text(
-                      'Hello',
+                      'Create',
                       style: TextStyle(
                         fontSize: 40.0,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
-                      'Again!',
+                      'Account',
                       style: TextStyle(
                         fontSize: 40.0,
                         fontWeight: FontWeight.bold,
-                        color: Colors.blue,
+                        color: primaryColor,
                       ),
                     ),
                     const SizedBox(height: 10.0),
                     Padding(
-                      padding: const EdgeInsets.only(right: 130.0),
+                      padding: const EdgeInsets.only(right: 150.0),
                       child: Text(
-                        'Welcome back you’ve been missed',
+                        'Register to get started',
                         style: TextStyle(
                           fontSize: 18.0,
                           color: Colors.grey[600],
                         ),
                       ),
                     ),
-                    const SizedBox(height: 30.0),
-                    Row(
-                      children: [
-                        // Username label with asterisk for required field
-                        Text('Username', style: TextStyle(fontSize: 14.0)),
-                        Text(
-                          '*',
-                          style: TextStyle(fontSize: 16.0, color: Colors.red),
-                        ),
-                      ],
-                    ),
+                    const SizedBox(height: 50.0),
+
                     // Username input field using a custom defaultFormField widget from components.dart to be used across the app for consistency and reusability
                     defaultFormField(
                       context: context,
+
                       controller: userNameController,
-                      type: TextInputType.text,
-                      // Validation to ensure the username field is not empty
-                      validate: (String? value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Username is required';
+
+                      type: TextInputType.name,
+
+                      label: "Full Name",
+
+                      prefix: Icons.person_outline,
+
+                      validate: (value) {
+                        if (value!.isEmpty) {
+                          return "Enter your name";
                         }
 
                         return null;
                       },
                     ),
                     const SizedBox(height: 20.0),
-                    Row(
-                      children: [
-                        // Email label with asterisk for required field
-                        Text('Email', style: TextStyle(fontSize: 14.0)),
-                        Text(
-                          '*',
-                          style: TextStyle(fontSize: 16.0, color: Colors.red),
-                        ),
-                      ],
-                    ),
-                    // Email input field using a custom defaultFormField widget from components.dart to be used across the app for consistency and reusability
+
                     defaultFormField(
                       context: context,
+
                       controller: emailController,
+
                       type: TextInputType.emailAddress,
-                      // Validation to ensure the email field is not empty
+
+                      label: "Email",
+
+                      prefix: Icons.email_outlined,
+
                       validate: (String? value) {
                         if (value == null || value.trim().isEmpty) {
                           return 'Email is required';
@@ -136,20 +130,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       },
                     ),
                     const SizedBox(height: 20.0),
-                    Row(
-                      children: [
-                        // Password label with asterisk for required field
-                        Text('Password', style: TextStyle(fontSize: 14.0)),
-                        Text(
-                          '*',
-                          style: TextStyle(fontSize: 16.0, color: Colors.red),
-                        ),
-                      ],
-                    ),
+
                     defaultFormField(
                       context: context,
+
                       controller: passwordController,
-                      // Suffix icon to toggle password visibility
+
+                      type: TextInputType.visiblePassword,
+
+                      label: "Password",
+
+                      prefix: Icons.lock_outline,
                       suffix: isPassword
                           ? Icons.visibility
                           : Icons.visibility_off,
@@ -158,12 +149,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           isPassword = !isPassword;
                         });
                       },
-                      // Keyboard type for password input to be hidden password
-                      type: TextInputType.visiblePassword,
-                      // Obscure text for password field based on isPassword state
                       isPassword: isPassword,
-                      // Validation to ensure the password field is not empty
-                      validate: (String? value) {
+
+
+                        validate: (String? value) {
                         if (value == null || value.isEmpty) {
                           return 'Password is required';
                         }
@@ -196,7 +185,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               'Sign In',
                               style: TextStyle(
                                 fontSize: 14.0,
-                                color: Colors.blue,
+                                color: primaryColor,
                               ),
                             ),
                           ),
@@ -216,7 +205,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         }
                       },
 
-                      text: 'Sign Up',
+                      text: 'Register',
                       radius: 10.0,
                     ),
                   ],
