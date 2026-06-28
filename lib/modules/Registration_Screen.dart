@@ -22,6 +22,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   bool isPassword = true;
 
+  String? emailError;
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -35,6 +37,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
       listener: (context, state) {
         if (state is RegisterSuccessState) {
           Navigator.pushReplacementNamed(context, '/login');
+        }
+
+        if (state is RegisterErrorState) {
+          setState(() {
+            emailError = state.error;
+          });
+        }
+
+        if (state is RegisterSuccessState) {
+          setState(() {
+            emailError = null;
+          });
+
+          Navigator.pushReplacementNamed(context, '/login');
+        }
+
+        if (state is RegisterErrorState) {
+          setState(() {
+            emailError = state.error;
+          });
+
+          formKey.currentState!.validate();
         }
       },
 
@@ -136,9 +160,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                           type: TextInputType.emailAddress,
 
-                          label: "Email",
+                          label: 'Email',
 
                           prefix: Icons.email_outlined,
+
+                          onChange: (value) {
+                            if (emailError != null) {
+                              setState(() {
+                                emailError = null;
+                              });
+                            }
+                          },
 
                           validate: (value) {
                             if (value == null || value.trim().isEmpty) {
@@ -151,7 +183,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               return 'Enter a valid email';
                             }
 
-                            return null;
+                            return emailError;
                           },
                         ),
 
@@ -229,23 +261,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                         SizedBox(height: height * .02),
 
-                        defaultButton(
-                          function: () {
-                            if (formKey.currentState!.validate()) {
-                              ProjectCubit.get(context).register(
-                                username: userNameController.text,
+                        state is RegisterLoadingState
+                            ? const Center(child: CircularProgressIndicator())
+                            : defaultButton(
+                                function: () {
+                                  if (formKey.currentState!.validate()) {
+                                    ProjectCubit.get(context).register(
+                                      username: userNameController.text,
+                                      email: emailController.text,
+                                      password: passwordController.text,
+                                    );
+                                  }
+                                },
 
-                                email: emailController.text,
+                                text: 'Register',
 
-                                password: passwordController.text,
-                              );
-                            }
-                          },
-
-                          text: 'Register',
-
-                          radius: 12,
-                        ),
+                                radius: 12,
+                              ),
 
                         SizedBox(height: height * .04),
                       ],

@@ -37,6 +37,9 @@ class ProjectsScreen extends StatelessWidget {
       },
 
       builder: (context, state) {
+        if (state is GetProjectsError) {
+          return Center(child: Text(state.error));
+        }
         return Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 

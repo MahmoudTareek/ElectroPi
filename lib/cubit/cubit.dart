@@ -27,52 +27,65 @@ class ProjectCubit extends Cubit<ProjectStates> {
     emit(ProjectBottomNavState());
   }
 
-Future login({
-  required String email,
-  required String password,
-}) async {
-  emit(LoginLoadingState());
+  Future login({required String email, required String password}) async {
+    emit(LoginLoadingState());
 
-  try {
-    String? savedEmail = CacheHelper.getString(key: 'email');
-    String? savedPassword = CacheHelper.getString(key: 'password');
-    if (savedEmail == email && savedPassword == password) {
-      emit(LoginSuccessState());
-      return;
+    try {
+      String? savedEmail = CacheHelper.getString(key: 'email');
+
+      String? savedPassword = CacheHelper.getString(key: 'password');
+
+      if (savedEmail == email) {
+        if (savedPassword != password) {
+          emit(LoginErrorState('Incorrect password'));
+
+          return;
+        }
+
+        emit(LoginSuccessState());
+
+        return;
+      }
+
+      Response userResponse = await DioHelper.getData(
+        url: 'users/search?q=$email',
+      );
+
+      List users = userResponse.data['users'];
+
+      if (users.isEmpty) {
+        emit(LoginErrorState('Email not found'));
+
+        return;
+      }
+
+      var user = users.first;
+
+      try {
+        Response response = await DioHelper.postData(
+          url: 'auth/login',
+
+          data: {'username': user['username'], 'password': password},
+        );
+
+        await CacheHelper.saveString(
+          key: 'token',
+
+          value: response.data['accessToken'],
+        );
+
+        await CacheHelper.saveString(key: 'username', value: user['username']);
+
+        await CacheHelper.saveString(key: 'email', value: user['email']);
+
+        emit(LoginSuccessState());
+      } on DioException {
+        emit(LoginErrorState('Incorrect password'));
+      }
+    } catch (_) {
+      emit(LoginErrorState('Something went wrong'));
     }
-    Response userResponse = await DioHelper.getData(
-      url: 'users/search?q=$email',
-    );
-    List users = userResponse.data['users'];
-    if (users.isEmpty) {
-      emit(LoginErrorState('Invalid credentials'));
-      return;
-    }
-    var user = users.first;
-    Response response = await DioHelper.postData(
-      url: 'auth/login',
-      data: {
-        'username': user['username'],
-        'password': password,
-      },
-    );
-    await CacheHelper.saveString(
-      key: 'token',
-      value: response.data['accessToken'],
-    );
-    await CacheHelper.saveString(
-      key: 'username',
-      value: user['username'],
-    );
-    await CacheHelper.saveString(
-      key: 'email',
-      value: user['email'],
-    );
-    emit(LoginSuccessState());
-  } catch (e) {
-    emit(LoginErrorState(e.toString()));
   }
-}
 
   Future register({
     required String username,
@@ -80,13 +93,37 @@ Future login({
     required String password,
   }) async {
     emit(RegisterLoadingState());
+
     try {
+      Response response = await DioHelper.getData(url: 'users/search?q=$email');
+
+      List users = response.data['users'];
+
+      bool emailExists = users.any(
+        (user) => user['email'].toString().toLowerCase() == email.toLowerCase(),
+      );
+
+      if (emailExists) {
+        emit(RegisterErrorState('This email is already registered'));
+        return;
+      }
+
       await CacheHelper.saveString(key: 'username', value: username);
+
       await CacheHelper.saveString(key: 'email', value: email);
+
       await CacheHelper.saveString(key: 'password', value: password);
+
       emit(RegisterSuccessState());
-    } catch (e) {
-      emit(RegisterErrorState(e.toString()));
+    } on DioException catch (e) {
+      emit(
+        RegisterErrorState(
+          e.response?.data?['message'] ??
+              'Registration failed. Please try again.',
+        ),
+      );
+    } catch (_) {
+      emit(RegisterErrorState('Something went wrong'));
     }
   }
 
@@ -136,25 +173,36 @@ Future login({
   List<TaskModel> projectTasks = [];
 
   Future getProjects() async {
+    emit(GetProjectsLoading());
+
     try {
-      emit(GetProjectsLoading());
       var response = await DioHelper.getDataProjects(url: 'posts');
+
       List data = response.data['posts'];
+
       List<ProjectModel> validProjects = [];
+
       for (var item in data) {
-        var tasksResponse = await DioHelper.getDataProjects(
-          url: 'todos/user/${item['userId']}',
-        );
-        List tasks = tasksResponse.data['todos'];
-        if (tasks.isNotEmpty) {
-          validProjects.add(ProjectModel.fromJson(item));
-        }
+        try {
+          var tasksResponse = await DioHelper.getDataProjects(
+            url: 'todos/user/${item['userId']}',
+          );
+
+          if ((tasksResponse.data['todos'] as List).isNotEmpty) {
+            validProjects.add(ProjectModel.fromJson(item));
+          }
+        } catch (_) {}
       }
+
       projects = validProjects;
+
       filteredProjects = List.from(projects);
+
       emit(GetProjectsSuccess());
-    } catch (e) {
-      emit(GetProjectsError(e.toString()));
+    } on DioException {
+      emit(GetProjectsError('Failed to load projects'));
+    } catch (_) {
+      emit(GetProjectsError('Unexpected error'));
     }
   }
 
