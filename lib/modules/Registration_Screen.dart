@@ -12,17 +12,24 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  var userNameController = TextEditingController();
-  var emailController = TextEditingController();
-  var passwordController = TextEditingController();
+  final userNameController = TextEditingController();
 
-  var formKey = GlobalKey<FormState>();
+  final emailController = TextEditingController();
+
+  final passwordController = TextEditingController();
+
+  final formKey = GlobalKey<FormState>();
 
   bool isPassword = true;
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final size = MediaQuery.of(context).size;
+
+    final width = size.width;
+    final height = size.height;
 
     return BlocConsumer<ProjectCubit, ProjectStates>(
       listener: (context, state) {
@@ -33,198 +40,217 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       builder: (context, state) {
         return Scaffold(
+          resizeToAvoidBottomInset: true,
+
           backgroundColor: isDark ? const Color(0xff121212) : Colors.white,
 
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 100, left: 20, right: 20),
+          body: SafeArea(
+            child: SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
 
-              child: Form(
-                key: formKey,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: height - MediaQuery.of(context).padding.top,
+                ),
 
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: width * .06,
+                  ).copyWith(top: height * .08, bottom: 30),
 
-                  children: [
-                    Text(
-                      'Create',
+                  child: Form(
+                    key: formKey,
 
-                      style: TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-
-                        color: isDark ? Colors.white : Colors.black,
-                      ),
-                    ),
-
-                    const Text(
-                      'Account',
-
-                      style: TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                        color: primaryColor,
-                      ),
-                    ),
-
-                    const SizedBox(height: 10),
-
-                    Padding(
-                      padding: const EdgeInsets.only(right: 150),
-
-                      child: Text(
-                        'Register to get started',
-
-                        style: TextStyle(
-                          fontSize: 18,
-
-                          color: isDark ? Colors.white70 : Colors.grey[600],
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 50),
-
-                    defaultFormField(
-                      context: context,
-
-                      controller: userNameController,
-
-                      type: TextInputType.name,
-
-                      label: "Full Name",
-
-                      prefix: Icons.person_outline,
-
-                      validate: (value) {
-                        if (value!.isEmpty) {
-                          return "Enter your name";
-                        }
-
-                        return null;
-                      },
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    defaultFormField(
-                      context: context,
-
-                      controller: emailController,
-
-                      type: TextInputType.emailAddress,
-
-                      label: "Email",
-
-                      prefix: Icons.email_outlined,
-
-                      validate: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Email is required';
-                        }
-
-                        if (!RegExp(
-                          r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                        ).hasMatch(value)) {
-                          return 'Enter a valid email';
-                        }
-
-                        return null;
-                      },
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    defaultFormField(
-                      context: context,
-
-                      controller: passwordController,
-
-                      type: TextInputType.visiblePassword,
-
-                      label: "Password",
-
-                      prefix: Icons.lock_outline,
-
-                      suffix: isPassword
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-
-                      suffixPrssed: () {
-                        setState(() {
-                          isPassword = !isPassword;
-                        });
-                      },
-
-                      isPassword: isPassword,
-
-                      validate: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Password is required';
-                        }
-
-                        if (value.length < 8 ||
-                            !RegExp(r'[A-Z]').hasMatch(value) ||
-                            !RegExp(r'\d').hasMatch(value)) {
-                          return 'Password must contain uppercase and number';
-                        }
-
-                        return null;
-                      },
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
 
                       children: [
                         Text(
-                          'Have an account? ',
+                          'Create',
 
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: width < 360 ? 34 : 40,
 
-                            color: isDark ? Colors.white70 : Colors.black,
+                            fontWeight: FontWeight.bold,
+
+                            color: isDark ? Colors.white : Colors.black,
                           ),
                         ),
 
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/login');
+                        Text(
+                          'Account',
+
+                          style: TextStyle(
+                            fontSize: width < 360 ? 34 : 40,
+
+                            fontWeight: FontWeight.bold,
+
+                            color: primaryColor,
+                          ),
+                        ),
+
+                        SizedBox(height: height * .015),
+
+                        SizedBox(
+                          width: width * .7,
+
+                          child: Text(
+                            'Register to get started',
+
+                            style: TextStyle(
+                              fontSize: width < 360 ? 16 : 18,
+
+                              color: isDark ? Colors.white70 : Colors.grey[600],
+                            ),
+                          ),
+                        ),
+
+                        SizedBox(height: height * .06),
+
+                        defaultFormField(
+                          context: context,
+
+                          controller: userNameController,
+
+                          type: TextInputType.name,
+
+                          label: "Full Name",
+
+                          prefix: Icons.person_outline,
+
+                          validate: (value) {
+                            if (value!.isEmpty) {
+                              return "Enter your name";
+                            }
+
+                            return null;
+                          },
+                        ),
+
+                        const SizedBox(height: 20),
+
+                        defaultFormField(
+                          context: context,
+
+                          controller: emailController,
+
+                          type: TextInputType.emailAddress,
+
+                          label: "Email",
+
+                          prefix: Icons.email_outlined,
+
+                          validate: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Email is required';
+                            }
+
+                            if (!RegExp(
+                              r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                            ).hasMatch(value)) {
+                              return 'Enter a valid email';
+                            }
+
+                            return null;
+                          },
+                        ),
+
+                        const SizedBox(height: 20),
+
+                        defaultFormField(
+                          context: context,
+
+                          controller: passwordController,
+
+                          type: TextInputType.visiblePassword,
+
+                          label: "Password",
+
+                          prefix: Icons.lock_outline,
+
+                          isPassword: isPassword,
+
+                          suffix: isPassword
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+
+                          suffixPrssed: () {
+                            setState(() {
+                              isPassword = !isPassword;
+                            });
                           },
 
-                          child: const Text(
-                            'Sign In',
+                          validate: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Password is required';
+                            }
 
-                            style: TextStyle(color: primaryColor),
-                          ),
+                            if (value.length < 8 ||
+                                !RegExp(r'[A-Z]').hasMatch(value) ||
+                                !RegExp(r'\d').hasMatch(value)) {
+                              return 'Password must contain uppercase and number';
+                            }
+
+                            return null;
+                          },
                         ),
+
+                        SizedBox(height: height * .02),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+
+                          children: [
+                            Flexible(
+                              child: Text(
+                                'Have an account?',
+
+                                style: TextStyle(
+                                  fontSize: width < 360 ? 13 : 14,
+
+                                  color: isDark ? Colors.white70 : Colors.black,
+                                ),
+                              ),
+                            ),
+
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/login');
+                              },
+
+                              child: const Text(
+                                'Sign In',
+
+                                style: TextStyle(color: primaryColor),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        SizedBox(height: height * .02),
+
+                        defaultButton(
+                          function: () {
+                            if (formKey.currentState!.validate()) {
+                              ProjectCubit.get(context).register(
+                                username: userNameController.text,
+
+                                email: emailController.text,
+
+                                password: passwordController.text,
+                              );
+                            }
+                          },
+
+                          text: 'Register',
+
+                          radius: 12,
+                        ),
+
+                        SizedBox(height: height * .04),
                       ],
                     ),
-
-                    const SizedBox(height: 20),
-
-                    defaultButton(
-                      function: () {
-                        if (formKey.currentState!.validate()) {
-                          ProjectCubit.get(context).register(
-                            username: userNameController.text,
-
-                            email: emailController.text,
-
-                            password: passwordController.text,
-                          );
-                        }
-                      },
-
-                      text: 'Register',
-
-                      radius: 12,
-                    ),
-
-                    const SizedBox(height: 40),
-                  ],
+                  ),
                 ),
               ),
             ),

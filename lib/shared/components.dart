@@ -48,9 +48,7 @@ Widget defaultFormField({
   VoidCallback? suffixPrssed,
   bool isClickable = true,
 }) {
-  final isDark =
-      Theme.of(context).brightness ==
-      Brightness.dark;
+  final isDark = Theme.of(context).brightness == Brightness.dark;
 
   return TextFormField(
     controller: controller,
@@ -58,12 +56,7 @@ Widget defaultFormField({
     obscureText: isPassword,
     enabled: isClickable,
 
-    style: TextStyle(
-      color:
-          isDark
-              ? Colors.white
-              : Colors.black,
-    ),
+    style: TextStyle(color: isDark ? Colors.white : Colors.black),
 
     onFieldSubmitted: onSubmit,
     onChanged: onChange,
@@ -73,110 +66,90 @@ Widget defaultFormField({
     decoration: InputDecoration(
       filled: true,
 
-      fillColor:
-          isDark
-              ? const Color(
-                0xff1E1E1E,
-              )
-              : Colors.white,
+      fillColor: isDark ? const Color(0xff1E1E1E) : Colors.white,
 
       labelText: label,
 
-      labelStyle: TextStyle(
-        color:
-            isDark
-                ? Colors.white70
-                : Colors.grey[500],
-      ),
+      labelStyle: TextStyle(color: isDark ? Colors.white70 : Colors.grey[500]),
 
-      prefixIcon:
-          prefix != null
-              ? Icon(
-                prefix,
-                color:
-                    isDark
-                        ? Colors.white70
-                        : Colors.grey,
-              )
-              : null,
+      prefixIcon: prefix != null
+          ? Icon(prefix, color: isDark ? Colors.white70 : Colors.grey)
+          : null,
 
-      suffixIcon:
-          suffix != null
-              ? IconButton(
-                onPressed:
-                    suffixPrssed,
-                icon: Icon(
-                  suffix,
-                ),
-              )
-              : null,
+      suffixIcon: suffix != null
+          ? IconButton(onPressed: suffixPrssed, icon: Icon(suffix))
+          : null,
 
-      border:
-          OutlineInputBorder(
-            borderRadius:
-                BorderRadius.circular(
-                  18,
-                ),
-          ),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(18)),
     ),
   );
 }
 
-Widget buildBoardingItem(
-  BoardingModel model,
-) {
-  return Column(
-    children: [
-      Expanded(
-        flex: 3,
-        child: Center(
-          child: Image.asset(
-            model.image,
+Widget buildBoardingItem(BuildContext context, BoardingModel model) {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+
+  final size = MediaQuery.of(context).size;
+
+  final width = size.width;
+
+  return Padding(
+    padding: EdgeInsets.symmetric(horizontal: width * .06),
+
+    child: Column(
+      children: [
+        Expanded(
+          flex: 3,
+
+          child: Center(
+            child: Image.asset(
+              model.image,
+
+              width: width * .75,
+
+              fit: BoxFit.contain,
+            ),
           ),
         ),
-      ),
 
-      Expanded(
-        child: Padding(
-          padding:
-              const EdgeInsets.symmetric(
-                horizontal: 20,
-              ),
-
+        Expanded(
           child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
 
             children: [
               Text(
                 model.title,
 
-                style:
-                    const TextStyle(
-                      fontSize:
-                          24,
-                      fontWeight:
-                          FontWeight
-                              .bold,
-                    ),
+                style: TextStyle(
+                  fontSize: width < 360 ? 22 : 24,
+
+                  fontWeight: FontWeight.bold,
+
+                  color: isDark ? Colors.white : Colors.black,
+                ),
               ),
 
-              const SizedBox(
-                height: 8,
-              ),
+              SizedBox(height: width < 360 ? 8 : 12),
 
-              Text(model.body),
+              Text(
+                model.body,
+
+                style: TextStyle(
+                  fontSize: width < 360 ? 15 : 16,
+
+                  height: 1.5,
+
+                  color: isDark ? Colors.white70 : Colors.grey[700],
+                ),
+              ),
             ],
           ),
         ),
-      ),
-    ],
+      ],
+    ),
   );
 }
 
-Color getStatusColor(
-  String status,
-) {
+Color getStatusColor(String status) {
   switch (status) {
     case "Done":
       return Colors.green;
@@ -189,16 +162,11 @@ Color getStatusColor(
   }
 }
 
-Color getStatusBackground(
-  String status,
-) {
-  return getStatusColor(
-    status,
-  ).withOpacity(.15);
+Color getStatusBackground(String status) {
+  return getStatusColor(status).withOpacity(.15);
 }
 
-class ProjectCard
-    extends StatelessWidget {
+class ProjectCard extends StatelessWidget {
   final ProjectModel project;
   final IconData icon;
   final Color iconColor;
@@ -211,41 +179,18 @@ class ProjectCard
   });
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
-    final isDark =
-        Theme.of(
-              context,
-            ).brightness ==
-            Brightness.dark;
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
-      padding:
-          const EdgeInsets.all(
-            18,
-          ),
+      padding: const EdgeInsets.all(18),
 
       decoration: BoxDecoration(
-        color:
-            isDark
-                ? const Color(
-                  0xff1E1E1E,
-                )
-                : Colors.white,
+        color: isDark ? const Color(0xff1E1E1E) : Colors.white,
 
-        borderRadius:
-            BorderRadius.circular(
-              18,
-            ),
+        borderRadius: BorderRadius.circular(18),
 
-        boxShadow: [
-          BoxShadow(
-            color:
-                Colors.black12,
-            blurRadius: 10,
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
       ),
 
       child: Row(
@@ -254,34 +199,20 @@ class ProjectCard
             height: 50,
             width: 50,
 
-            decoration:
-                BoxDecoration(
-                  color: iconColor
-                      .withOpacity(
-                        .15,
-                      ),
+            decoration: BoxDecoration(
+              color: iconColor.withOpacity(.15),
 
-                  shape:
-                      BoxShape
-                          .circle,
-                ),
-
-            child: Icon(
-              icon,
-              color:
-                  iconColor,
+              shape: BoxShape.circle,
             ),
+
+            child: Icon(icon, color: iconColor),
           ),
 
-          const SizedBox(
-            width: 14,
-          ),
+          const SizedBox(width: 14),
 
           Expanded(
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment
-                      .start,
+              crossAxisAlignment: CrossAxisAlignment.start,
 
               children: [
                 Text(
@@ -290,42 +221,25 @@ class ProjectCard
                   maxLines: 2,
 
                   style: TextStyle(
-                    color:
-                        isDark
-                            ? Colors
-                                .white
-                            : Colors
-                                .black,
+                    color: isDark ? Colors.white : Colors.black,
 
-                    fontWeight:
-                        FontWeight
-                            .bold,
+                    fontWeight: FontWeight.bold,
 
-                    fontSize:
-                        18,
+                    fontSize: 18,
                   ),
                 ),
 
-                const SizedBox(
-                  height: 5,
-                ),
+                const SizedBox(height: 5),
 
                 Text(
                   project.description,
 
                   maxLines: 1,
 
-                  overflow:
-                      TextOverflow
-                          .ellipsis,
+                  overflow: TextOverflow.ellipsis,
 
                   style: TextStyle(
-                    color:
-                        isDark
-                            ? Colors
-                                .white70
-                            : Colors
-                                .grey,
+                    color: isDark ? Colors.white70 : Colors.grey,
                   ),
                 ),
               ],
@@ -333,41 +247,21 @@ class ProjectCard
           ),
 
           Container(
-            padding:
-                const EdgeInsets.symmetric(
-                  horizontal:
-                      12,
-                  vertical:
-                      6,
-                ),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
 
-            decoration:
-                BoxDecoration(
-                  color:
-                      getStatusBackground(
-                        project
-                            .status,
-                      ),
+            decoration: BoxDecoration(
+              color: getStatusBackground(project.status),
 
-                  borderRadius:
-                      BorderRadius.circular(
-                        30,
-                      ),
-                ),
+              borderRadius: BorderRadius.circular(30),
+            ),
 
             child: Text(
               project.status,
 
               style: TextStyle(
-                color:
-                    getStatusColor(
-                      project
-                          .status,
-                    ),
+                color: getStatusColor(project.status),
 
-                fontWeight:
-                    FontWeight
-                        .w600,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
@@ -377,68 +271,39 @@ class ProjectCard
   }
 }
 
-class TaskCard
-    extends StatelessWidget {
+class TaskCard extends StatelessWidget {
   final TaskModel task;
   final VoidCallback onTap;
 
-  const TaskCard({
-    super.key,
-    required this.task,
-    required this.onTap,
-  });
+  const TaskCard({super.key, required this.task, required this.onTap});
 
   Color get priorityColor {
-    return task.priority ==
-            "High"
+    return task.priority == "High"
         ? Colors.red
-        : task.priority ==
-            "Medium"
+        : task.priority == "Medium"
         ? Colors.orange
         : Colors.green;
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
-    final isDark =
-        Theme.of(
-              context,
-            ).brightness ==
-            Brightness.dark;
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
-      padding:
-          const EdgeInsets.all(
-            18,
-          ),
+      padding: const EdgeInsets.all(18),
 
       decoration: BoxDecoration(
-        color:
-            isDark
-                ? const Color(
-                  0xff1E1E1E,
-                )
-                : Colors.white,
+        color: isDark ? const Color(0xff1E1E1E) : Colors.white,
 
-        borderRadius:
-            BorderRadius.circular(
-              18,
-            ),
+        borderRadius: BorderRadius.circular(18),
 
         boxShadow: [
           BoxShadow(
-            color:
-                Colors.black12,
+            color: Colors.black12,
 
             blurRadius: 8,
 
-            offset:
-                const Offset(
-                  0,
-                  3,
-                ),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -452,85 +317,50 @@ class TaskCard
               height: 24,
               width: 24,
 
-              decoration:
-                  BoxDecoration(
-                    shape:
-                        BoxShape
-                            .circle,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
 
-                    color:
-                        (task.selected ||
-                                task.status ==
-                                    "Done")
-                            ? primaryColor
-                            : Colors
-                                .transparent,
+                color: (task.selected || task.status == "Done")
+                    ? primaryColor
+                    : Colors.transparent,
 
-                    border: Border.all(
-                      color:
-                          primaryColor,
-                    ),
-                  ),
+                border: Border.all(color: primaryColor),
+              ),
 
-              child:
-                  (task.selected ||
-                          task.status ==
-                              "Done")
-                      ? const Icon(
-                        Icons.check,
-                        color:
-                            Colors.white,
-                        size: 16,
-                      )
-                      : null,
+              child: (task.selected || task.status == "Done")
+                  ? const Icon(Icons.check, color: Colors.white, size: 16)
+                  : null,
             ),
           ),
 
-          const SizedBox(
-            width: 16,
-          ),
+          const SizedBox(width: 16),
 
           Expanded(
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment
-                      .start,
+              crossAxisAlignment: CrossAxisAlignment.start,
 
               children: [
                 Text(
                   task.title,
 
                   style: TextStyle(
-                    color:
-                        isDark
-                            ? Colors
-                                .white
-                            : Colors
-                                .black,
+                    color: isDark ? Colors.white : Colors.black,
 
-                    fontWeight:
-                        FontWeight
-                            .bold,
+                    fontWeight: FontWeight.bold,
 
-                    fontSize:
-                        18,
+                    fontSize: 18,
                   ),
                 ),
 
-                const SizedBox(
-                  height: 8,
-                ),
+                const SizedBox(height: 8),
 
                 Text(
                   task.priority,
 
                   style: TextStyle(
-                    color:
-                        priorityColor,
+                    color: priorityColor,
 
-                    fontWeight:
-                        FontWeight
-                            .w600,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ],
@@ -538,39 +368,21 @@ class TaskCard
           ),
 
           Container(
-            padding:
-                const EdgeInsets.symmetric(
-                  horizontal:
-                      14,
-                  vertical:
-                      8,
-                ),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
 
-            decoration:
-                BoxDecoration(
-                  color:
-                      getStatusBackground(
-                        task.status,
-                      ),
+            decoration: BoxDecoration(
+              color: getStatusBackground(task.status),
 
-                  borderRadius:
-                      BorderRadius.circular(
-                        25,
-                      ),
-                ),
+              borderRadius: BorderRadius.circular(25),
+            ),
 
             child: Text(
               task.status,
 
               style: TextStyle(
-                color:
-                    getStatusColor(
-                      task.status,
-                    ),
+                color: getStatusColor(task.status),
 
-                fontWeight:
-                    FontWeight
-                        .w600,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),

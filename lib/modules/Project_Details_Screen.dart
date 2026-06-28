@@ -19,111 +19,151 @@ class ProjectDetailsScreen extends StatelessWidget {
     for (var task in cubit.projectTasks) {
       if (task.selected) {
         task.status = 'Done';
+
         task.selected = false;
       }
     }
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    final width = size.width;
+
+    final height = size.height;
+
     return BlocBuilder<ProjectCubit, ProjectStates>(
       builder: (context, state) {
-        var cubit = ProjectCubit.get(context);
+        final cubit = ProjectCubit.get(context);
+
         return Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          floatingActionButton: FloatingActionButton(
-            backgroundColor: primaryColor,
-            foregroundColor: Colors.white,
-            onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                builder: (_) => const AddTaskBottomSheet(),
-              );
-            },
-            child: const Icon(Icons.add),
+
+          floatingActionButton: SizedBox(
+            width: width < 360 ? 52 : 58,
+
+            height: width < 360 ? 52 : 58,
+
+            child: FloatingActionButton(
+              backgroundColor: primaryColor,
+
+              foregroundColor: Colors.white,
+
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+
+                  isScrollControlled: true,
+
+                  useSafeArea: true,
+
+                  backgroundColor: Colors.transparent,
+
+                  builder: (_) => const AddTaskBottomSheet(),
+                );
+              },
+
+              child: Icon(Icons.add, size: width < 360 ? 24 : 28),
+            ),
           ),
-          body: Column(
-            children: [
-              Container(
-                color: primaryColor,
-                child: Column(
-                  children: [
-                    SizedBox(height: MediaQuery.of(context).padding.top),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 18,
-                      ),
-                      child: Row(
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            icon: const Icon(
-                              Icons.arrow_back_ios,
+
+          body: SafeArea(
+            bottom: false,
+
+            child: Column(
+              children: [
+                Container(
+                  color: primaryColor,
+
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: width * .05,
+
+                      vertical: height * .02,
+                    ),
+
+                    child: Row(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+
+                          icon: Icon(
+                            Icons.arrow_back_ios,
+
+                            color: Colors.white,
+
+                            size: width < 360 ? 20 : 24,
+                          ),
+                        ),
+
+                        Expanded(
+                          child: Text(
+                            project.title,
+
+                            maxLines: 1,
+
+                            overflow: TextOverflow.ellipsis,
+
+                            textAlign: TextAlign.center,
+
+                            style: TextStyle(
                               color: Colors.white,
+
+                              fontSize: width < 360 ? 18 : 22,
+
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Expanded(
-                            child: Text(
-                              project.title,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 22,
+                        ),
+
+                        SizedBox(width: width < 360 ? 32 : 40),
+                      ],
+                    ),
+                  ),
+                ),
+
+                Expanded(
+                  child: state is GetTasksLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : ListView(
+                          padding: EdgeInsets.all(width * .05),
+
+                          children: [
+                            Text(
+                              'Tasks (${cubit.projectTasks.length})',
+
+                              style: TextStyle(
+                                fontSize: width < 360 ? 22 : 24,
+
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 40),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: state is GetTasksLoading
-                    ? const Center(child: CircularProgressIndicator())
-                    : ListView(
-                        padding: const EdgeInsets.all(20),
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Tasks (${cubit.projectTasks.length})',
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
+
+                            SizedBox(height: height * .025),
+
+                            ...cubit.projectTasks.map(
+                              (task) => Padding(
+                                padding: EdgeInsets.only(bottom: height * .018),
+
+                                child: TaskCard(
+                                  task: task,
+
+                                  onTap: () {
+                                    cubit.toggleTask(
+                                      cubit.projectTasks.indexOf(task),
+                                    );
+                                  },
                                 ),
                               ),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          ...cubit.projectTasks.map(
-                            (task) => Padding(
-                              padding: const EdgeInsets.only(bottom: 14),
-                              child: TaskCard(
-                                task: task,
-                                onTap: () {
-                                  cubit.toggleTask(
-                                    cubit.projectTasks.indexOf(task),
-                                  );
-                                },
-                              ),
                             ),
-                          ),
-                        ],
-                      ),
-              ),
-            ],
+                          ],
+                        ),
+                ),
+              ],
+            ),
           ),
         );
       },

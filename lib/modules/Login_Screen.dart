@@ -12,13 +12,23 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  var emailController = TextEditingController();
-  var passwordController = TextEditingController();
-  var formKey = GlobalKey<FormState>();
+  final emailController = TextEditingController();
+
+  final passwordController = TextEditingController();
+
+  final formKey = GlobalKey<FormState>();
+
   bool isPassword = true;
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final size = MediaQuery.of(context).size;
+
+    final width = size.width;
+    final height = size.height;
+
     return BlocConsumer<ProjectCubit, ProjectStates>(
       listener: (context, state) {
         if (state is LoginSuccessState) {
@@ -29,125 +39,198 @@ class _LoginScreenState extends State<LoginScreen> {
           );
         }
       },
+
       builder: (context, state) {
         return Scaffold(
-          backgroundColor: isDark ? const Color(0xff121212) : Colors.white,
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 100, left: 20, right: 20),
-              child: Form(
-                key: formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Hello',
-                      style: TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : Colors.black,
-                      ),
-                    ),
-                    const Text(
-                      'Again!',
-                      style: TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                        color: primaryColor,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 150),
-                      child: Text(
-                        'Login to continue to your account',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: isDark ? Colors.white70 : Colors.grey[600],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 50),
-                    defaultFormField(
-                      context: context,
-                      controller: emailController,
-                      type: TextInputType.emailAddress,
-                      label: 'Email',
-                      prefix: Icons.email_outlined,
-                      validate: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
-                        }
-                        if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                          return 'Please enter a valid email';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    defaultFormField(
-                      context: context,
-                      controller: passwordController,
-                      type: TextInputType.visiblePassword,
-                      label: 'Password',
-                      prefix: Icons.lock_outline,
-                      isPassword: isPassword,
-                      suffix: isPassword
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                      suffixPrssed: () {
-                        setState(() {
-                          isPassword = !isPassword;
-                        });
-                      },
-                      validate: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Password must not be empty';
-                        }
-                        if (value.length < 8) {
-                          return 'Password must be at least 8 characters';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 50),
-                    defaultButton(
-                      function: () {
-                        if (formKey.currentState!.validate()) {
-                          ProjectCubit.get(context).login(
-                            email: emailController.text,
+          resizeToAvoidBottomInset: true,
 
-                            password: passwordController.text,
-                          );
-                        }
-                      },
-                      text: 'Login',
-                      radius: 12,
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+          backgroundColor: isDark ? const Color(0xff121212) : Colors.white,
+
+          body: SafeArea(
+            child: SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: height - MediaQuery.of(context).padding.top,
+                ),
+
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: width * .06,
+                  ).copyWith(top: height * .08, bottom: 30),
+
+                  child: Form(
+                    key: formKey,
+
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+
                       children: [
                         Text(
-                          'Don’t have an account? ',
+                          'Hello',
+
                           style: TextStyle(
-                            fontSize: 14,
-                            color: isDark ? Colors.white70 : Colors.black,
+                            fontSize: width < 360 ? 34 : 40,
+
+                            fontWeight: FontWeight.bold,
+
+                            color: isDark ? Colors.white : Colors.black,
                           ),
                         ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/register');
+
+                        Text(
+                          'Again!',
+
+                          style: TextStyle(
+                            fontSize: width < 360 ? 34 : 40,
+
+                            fontWeight: FontWeight.bold,
+
+                            color: primaryColor,
+                          ),
+                        ),
+
+                        SizedBox(height: height * .015),
+
+                        SizedBox(
+                          width: width * .7,
+
+                          child: Text(
+                            'Login to continue to your account',
+
+                            style: TextStyle(
+                              fontSize: width < 360 ? 16 : 18,
+
+                              color: isDark ? Colors.white70 : Colors.grey[600],
+                            ),
+                          ),
+                        ),
+
+                        SizedBox(height: height * .06),
+
+                        defaultFormField(
+                          context: context,
+
+                          controller: emailController,
+
+                          type: TextInputType.emailAddress,
+
+                          label: 'Email',
+
+                          prefix: Icons.email_outlined,
+
+                          validate: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your email';
+                            }
+
+                            if (!RegExp(
+                              r'^[^@]+@[^@]+\.[^@]+',
+                            ).hasMatch(value)) {
+                              return 'Please enter a valid email';
+                            }
+
+                            return null;
                           },
-                          child: const Text(
-                            'Register',
-                            style: TextStyle(color: primaryColor, fontSize: 14),
-                          ),
                         ),
+
+                        const SizedBox(height: 20),
+
+                        defaultFormField(
+                          context: context,
+
+                          controller: passwordController,
+
+                          type: TextInputType.visiblePassword,
+
+                          label: 'Password',
+
+                          prefix: Icons.lock_outline,
+
+                          isPassword: isPassword,
+
+                          suffix: isPassword
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+
+                          suffixPrssed: () {
+                            setState(() {
+                              isPassword = !isPassword;
+                            });
+                          },
+
+                          validate: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Password must not be empty';
+                            }
+
+                            if (value.length < 8) {
+                              return 'Password must be at least 8 characters';
+                            }
+
+                            return null;
+                          },
+                        ),
+
+                        SizedBox(height: height * .06),
+
+                        defaultButton(
+                          function: () {
+                            if (formKey.currentState!.validate()) {
+                              ProjectCubit.get(context).login(
+                                email: emailController.text,
+
+                                password: passwordController.text,
+                              );
+                            }
+                          },
+
+                          text: 'Login',
+
+                          radius: 12,
+                        ),
+
+                        SizedBox(height: height * .015),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+
+                          children: [
+                            Flexible(
+                              child: Text(
+                                'Don’t have an account?',
+
+                                style: TextStyle(
+                                  fontSize: width < 360 ? 13 : 14,
+
+                                  color: isDark ? Colors.white70 : Colors.black,
+                                ),
+                              ),
+                            ),
+
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/register');
+                              },
+
+                              child: const Text(
+                                'Register',
+
+                                style: TextStyle(
+                                  color: primaryColor,
+
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        SizedBox(height: height * .04),
                       ],
                     ),
-                    const SizedBox(height: 40),
-                  ],
+                  ),
                 ),
               ),
             ),

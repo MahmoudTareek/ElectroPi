@@ -12,9 +12,14 @@ class ProjectsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var cubit = ProjectCubit.get(context);
+    final cubit = ProjectCubit.get(context);
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final size = MediaQuery.of(context).size;
+
+    final width = size.width;
+    final height = size.height;
 
     return BlocConsumer<ProjectCubit, ProjectStates>(
       listener: (context, state) {
@@ -35,188 +40,209 @@ class ProjectsScreen extends StatelessWidget {
         return Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
-          body: Column(
-            children: [
-              Container(
-                height: 250,
+          body: SafeArea(
+            bottom: false,
 
-                width: double.infinity,
+            child: Column(
+              children: [
+                Container(
+                  height: height * .25,
 
-                padding: const EdgeInsets.only(top: 60, left: 24, right: 24),
+                  width: double.infinity,
 
-                decoration: const BoxDecoration(
-                  color: primaryColor,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: width * .06,
+                  ).copyWith(top: height * .02),
 
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30),
+                  decoration: const BoxDecoration(
+                    color: primaryColor,
+
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(30),
+
+                      bottomRight: Radius.circular(30),
+                    ),
+                  ),
+
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                        children: [
+                          Text(
+                            "My Projects",
+
+                            style: TextStyle(
+                              color: Colors.white,
+
+                              fontSize: width < 360 ? 26 : 30,
+
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+
+                          IconButton(
+                            onPressed: () {
+                              cubit.changeTheme();
+                            },
+
+                            icon: Icon(
+                              cubit.isDark ? Icons.light_mode : Icons.dark_mode,
+
+                              color: Colors.white,
+
+                              size: width < 360 ? 22 : 26,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: height * .01),
+
+                      Text(
+                        "Here are your projects",
+
+                        style: TextStyle(
+                          color: Colors.white70,
+
+                          fontSize: width < 360 ? 14 : 16,
+                        ),
+                      ),
+
+                      SizedBox(height: height * .03),
+
+                      Container(
+                        height: width < 360 ? 50 : 55,
+
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? const Color(0xff1E1E1E)
+                              : Colors.white,
+
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+
+                        child: TextField(
+                          style: TextStyle(
+                            color: isDark ? Colors.white : Colors.black,
+                          ),
+
+                          onChanged: (value) {
+                            cubit.searchProjects(value);
+                          },
+
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+
+                            prefixIcon: Icon(
+                              Icons.search,
+
+                              color: isDark ? Colors.white70 : Colors.grey,
+                            ),
+
+                            suffixIcon: Icon(
+                              Icons.tune,
+
+                              color: isDark ? Colors.white70 : Colors.grey,
+                            ),
+
+                            hintText: "Search for a project...",
+
+                            hintStyle: TextStyle(
+                              color: isDark ? Colors.white54 : Colors.grey,
+                            ),
+
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: width < 360 ? 12 : 15,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
 
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Expanded(
+                  child: state is GetProjectsLoading
+                      ? const Center(
+                          child: CircularProgressIndicator(color: primaryColor),
+                        )
+                      : RefreshIndicator(
+                          color: primaryColor,
 
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                      children: [
-                        const Text(
-                          "My Projects",
-
-                          style: TextStyle(
-                            color: Colors.white,
-
-                            fontSize: 30,
-
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-
-                        IconButton(
-                          onPressed: () {
-                            cubit.changeTheme();
+                          onRefresh: () async {
+                            await cubit.getProjects();
                           },
 
-                          icon: Icon(
-                            cubit.isDark ? Icons.light_mode : Icons.dark_mode,
+                          child: cubit.filteredProjects.isEmpty
+                              ? ListView(
+                                  physics:
+                                      const AlwaysScrollableScrollPhysics(),
 
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
+                                  children: [
+                                    SizedBox(height: height * .08),
 
-                    const SizedBox(height: 8),
+                                    const EmptyProjectsWidget(),
+                                  ],
+                                )
+                              : ListView.separated(
+                                  padding: EdgeInsets.only(
+                                    top: height * .015,
 
-                    const Text(
-                      "Here are your projects",
+                                    bottom: 20,
+                                  ),
 
-                      style: TextStyle(color: Colors.white70, fontSize: 16),
-                    ),
+                                  itemCount: cubit.filteredProjects.length,
 
-                    const SizedBox(height: 25),
+                                  separatorBuilder: (_, __) =>
+                                      SizedBox(height: height * .012),
 
-                    Container(
-                      height: 55,
+                                  itemBuilder: (context, index) {
+                                    final model = cubit.filteredProjects[index];
 
-                      decoration: BoxDecoration(
-                        color: isDark ? const Color(0xff1E1E1E) : Colors.white,
-
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-
-                      child: TextField(
-                        style: TextStyle(
-                          color: isDark ? Colors.white : Colors.black,
-                        ),
-
-                        onChanged: (value) {
-                          cubit.searchProjects(value);
-                        },
-
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-
-                          prefixIcon: Icon(
-                            Icons.search,
-
-                            color: isDark ? Colors.white70 : Colors.grey,
-                          ),
-
-                          suffixIcon: Icon(
-                            Icons.tune,
-
-                            color: isDark ? Colors.white70 : Colors.grey,
-                          ),
-
-                          hintText: "Search for a project...",
-
-                          hintStyle: TextStyle(
-                            color: isDark ? Colors.white54 : Colors.grey,
-                          ),
-
-                          contentPadding: const EdgeInsets.only(top: 15),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              Expanded(
-                child: state is GetProjectsLoading
-                    ? const Center(
-                        child: CircularProgressIndicator(color: primaryColor),
-                      )
-                    : RefreshIndicator(
-                        color: primaryColor,
-
-                        onRefresh: () async {
-                          await cubit.getProjects();
-                        },
-
-                        child: cubit.filteredProjects.isEmpty
-                            ? ListView(
-                                physics: const AlwaysScrollableScrollPhysics(),
-
-                                children: const [
-                                  SizedBox(height: 80),
-
-                                  EmptyProjectsWidget(),
-                                ],
-                              )
-                            : ListView.separated(
-                                padding: const EdgeInsets.only(
-                                  top: 12,
-
-                                  bottom: 20,
-                                ),
-
-                                itemCount: cubit.filteredProjects.length,
-
-                                separatorBuilder: (_, __) =>
-                                    const SizedBox(height: 10),
-
-                                itemBuilder: (context, index) {
-                                  var model = cubit.filteredProjects[index];
-
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                    ),
-
-                                    child: InkWell(
-                                      borderRadius: BorderRadius.circular(18),
-
-                                      onTap: () async {
-                                        await cubit.getProjectTasks(
-                                          model.userId,
-                                        );
-
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) =>
-                                                ProjectDetailsScreen(
-                                                  project: model,
-                                                ),
-                                          ),
-                                        );
-                                      },
-
-                                      child: ProjectCard(
-                                        project: model,
-                                        icon: Icons.folder,
-                                        iconColor: primaryColor,
+                                    return Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: width * .03,
                                       ),
-                                    ),
-                                  );
-                                },
-                              ),
-                      ),
-              ),
-            ],
+
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.circular(18),
+
+                                        onTap: () async {
+                                          await cubit.getProjectTasks(
+                                            model.userId,
+                                          );
+
+                                          Navigator.push(
+                                            context,
+
+                                            MaterialPageRoute(
+                                              builder: (_) =>
+                                                  ProjectDetailsScreen(
+                                                    project: model,
+                                                  ),
+                                            ),
+                                          );
+                                        },
+
+                                        child: ProjectCard(
+                                          project: model,
+
+                                          icon: Icons.folder,
+
+                                          iconColor: primaryColor,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                        ),
+                ),
+              ],
+            ),
           ),
         );
       },

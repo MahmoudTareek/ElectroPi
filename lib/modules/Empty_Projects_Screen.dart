@@ -6,35 +6,65 @@ class EmptyProjectsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final width = size.width;
+
+    final circleSize = width * 0.42;
+    final iconSize = width * 0.22;
+
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30),
+        padding: EdgeInsets.symmetric(horizontal: width * .08),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+
           children: [
             Container(
-              height: 170,
-              width: 170,
+              height: circleSize.clamp(140.0, 190.0),
+
+              width: circleSize.clamp(140.0, 190.0),
+
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
+
                 color: Color(0xffEEF3FF),
               ),
-              child: const Icon(
+
+              child: Icon(
                 Icons.inventory_2_outlined,
-                size: 90,
+
+                size: iconSize.clamp(70.0, 100.0),
+
                 color: primaryColor,
               ),
             ),
-            const SizedBox(height: 28),
-            const Text(
+
+            SizedBox(height: width < 360 ? 22 : 28),
+
+            Text(
               "No Projects Yet",
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 14),
-            const Text(
-              "You don't have any projects.",
+
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey, fontSize: 16),
+
+              style: TextStyle(
+                fontSize: width < 360 ? 24 : 28,
+
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height: 14),
+
+            Text(
+              "You don't have any projects.",
+
+              textAlign: TextAlign.center,
+
+              style: TextStyle(
+                color: Colors.grey,
+
+                fontSize: width < 360 ? 14 : 16,
+              ),
             ),
           ],
         ),
