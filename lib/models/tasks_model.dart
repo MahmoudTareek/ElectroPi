@@ -1,30 +1,22 @@
 class TaskModel {
-  final int id;
-  final String title;
+  String title;
+  String priority;
   String status;
-  final String priority;
   bool selected;
+
   TaskModel({
-    required this.id,
     required this.title,
-    required this.status,
     required this.priority,
+    required this.status,
     this.selected = false,
   });
-  factory TaskModel.fromJson(
-      Map<String, dynamic> json) {
+
+  factory TaskModel.fromJson(Map<String, dynamic> json) {
     return TaskModel(
-      id: json['id'],
-      title: json['todo'],
-      status:
-          json['completed']
-              ? 'Done'
-              : 'Pending',
-      priority: [
-        'Low',
-        'Medium',
-        'High'
-      ][json['id'] % 3],
+      title: json['todo'] ?? '',
+      priority: 'Medium',
+      status: json['completed'] ? 'Done' : 'Pending',
+      selected: json['completed'] ?? false,
     );
   }
 }

@@ -15,159 +15,254 @@ class _RegisterScreenState extends State<RegisterScreen> {
   var userNameController = TextEditingController();
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
+
   var formKey = GlobalKey<FormState>();
+
   bool isPassword = true;
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return BlocConsumer<ProjectCubit, ProjectStates>(
       listener: (context, state) {
         if (state is RegisterSuccessState) {
           Navigator.pushReplacementNamed(context, '/login');
         }
       },
+
       builder: (context, state) {
         return Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor:
+              isDark ? const Color(0xff121212) : Colors.white,
+
           body: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.only(
-                top: 100.0,
-                left: 20.0,
-                right: 20.0,
+                top: 100,
+                left: 20,
+                right: 20,
               ),
+
               child: Form(
                 key: formKey,
+
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+
                   children: [
-                    // Greeting texts
-                    const Text(
+                    /// TITLE
+                    Text(
                       'Create',
+
                       style: TextStyle(
-                        fontSize: 40.0,
+                        fontSize: 40,
                         fontWeight: FontWeight.bold,
+
+                        color:
+                            isDark
+                                ? Colors.white
+                                : Colors.black,
                       ),
                     ),
-                    Text(
+
+                    const Text(
                       'Account',
+
                       style: TextStyle(
-                        fontSize: 40.0,
+                        fontSize: 40,
                         fontWeight: FontWeight.bold,
                         color: primaryColor,
                       ),
                     ),
-                    const SizedBox(height: 10.0),
+
+                    const SizedBox(height: 10),
+
                     Padding(
-                      padding: const EdgeInsets.only(right: 150.0),
+                      padding:
+                          const EdgeInsets.only(right: 150),
+
                       child: Text(
                         'Register to get started',
+
                         style: TextStyle(
-                          fontSize: 18.0,
-                          color: Colors.grey[600],
+                          fontSize: 18,
+
+                          color:
+                              isDark
+                                  ? Colors.white70
+                                  : Colors.grey[600],
                         ),
                       ),
                     ),
-                    const SizedBox(height: 50.0),
+
+                    const SizedBox(height: 50),
+
+                    /// USERNAME
                     defaultFormField(
                       context: context,
+
                       controller: userNameController,
+
                       type: TextInputType.name,
+
                       label: "Full Name",
+
                       prefix: Icons.person_outline,
+
                       validate: (value) {
                         if (value!.isEmpty) {
                           return "Enter your name";
                         }
+
                         return null;
                       },
                     ),
-                    const SizedBox(height: 20.0),
+
+                    const SizedBox(height: 20),
+
+                    /// EMAIL
                     defaultFormField(
                       context: context,
+
                       controller: emailController,
+
                       type: TextInputType.emailAddress,
+
                       label: "Email",
+
                       prefix: Icons.email_outlined,
-                      validate: (String? value) {
-                        if (value == null || value.trim().isEmpty) {
+
+                      validate: (value) {
+                        if (value == null ||
+                            value.trim().isEmpty) {
                           return 'Email is required';
                         }
+
                         if (!RegExp(
                           r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
                         ).hasMatch(value)) {
                           return 'Enter a valid email';
                         }
+
                         return null;
                       },
                     ),
-                    const SizedBox(height: 20.0),
+
+                    const SizedBox(height: 20),
+
+                    /// PASSWORD
                     defaultFormField(
                       context: context,
+
                       controller: passwordController,
+
                       type: TextInputType.visiblePassword,
+
                       label: "Password",
+
                       prefix: Icons.lock_outline,
-                      suffix: isPassword
-                          ? Icons.visibility
-                          : Icons.visibility_off,
+
+                      suffix:
+                          isPassword
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+
                       suffixPrssed: () {
                         setState(() {
                           isPassword = !isPassword;
                         });
                       },
+
                       isPassword: isPassword,
-                      validate: (String? value) {
-                        if (value == null || value.isEmpty) {
+
+                      validate: (value) {
+                        if (value == null ||
+                            value.isEmpty) {
                           return 'Password is required';
                         }
+
                         if (value.length < 8 ||
-                            !RegExp(r'[A-Z]').hasMatch(value) ||
-                            !RegExp(r'\d').hasMatch(value)) {
-                          return 'Password must be at least 8 characters and contain an uppercase letter and a number';
+                            !RegExp(
+                              r'[A-Z]',
+                            ).hasMatch(value) ||
+                            !RegExp(
+                              r'\d',
+                            ).hasMatch(value)) {
+                          return 'Password must contain uppercase and number';
                         }
+
                         return null;
                       },
                     ),
-                    const SizedBox(height: 20.0),
+
+                    const SizedBox(height: 20),
+
+                    /// LOGIN TEXT
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment:
+                          MainAxisAlignment.center,
+
                       children: [
                         Text(
                           'Have an account? ',
-                          style: TextStyle(fontSize: 14.0),
+
+                          style: TextStyle(
+                            fontSize: 14,
+
+                            color:
+                                isDark
+                                    ? Colors.white70
+                                    : Colors.black,
+                          ),
                         ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/login');
-                            },
-                            child: const Text(
-                              'Sign In',
-                              style: TextStyle(
-                                fontSize: 14.0,
-                                color: primaryColor,
-                              ),
+
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              '/login',
+                            );
+                          },
+
+                          child: const Text(
+                            'Sign In',
+
+                            style: TextStyle(
+                              color: primaryColor,
                             ),
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: 20.0),
+
+                    const SizedBox(height: 20),
+
+                    /// REGISTER BUTTON
                     defaultButton(
                       function: () {
-                        if (formKey.currentState!.validate()) {
-                          ProjectCubit.get(context).register(
-                            username: userNameController.text,
-                            email: emailController.text,
-                            password: passwordController.text,
-                          );
+                        if (formKey.currentState!
+                            .validate()) {
+                          ProjectCubit.get(context)
+                              .register(
+                                username:
+                                    userNameController.text,
+
+                                email:
+                                    emailController.text,
+
+                                password:
+                                    passwordController.text,
+                              );
                         }
                       },
+
                       text: 'Register',
-                      radius: 10.0,
+
+                      radius: 12,
                     ),
+
+                    const SizedBox(height: 40),
                   ],
                 ),
               ),

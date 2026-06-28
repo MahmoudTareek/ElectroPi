@@ -21,46 +21,73 @@ class ProjectCubit extends Cubit<ProjectStates> {
     BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Profile'),
   ];
 
-  List<Widget> screen = [
-    ProjectsScreen(),
-    ProfileScreen(),
-  ];
+  List<Widget> screen = [ProjectsScreen(), ProfileScreen()];
   void changeBottomNavBar(int index) {
     currentIndex = index;
     emit(ProjectBottomNavState());
   }
 
-  Future login({required String email, required String password}) async {
-    emit(LoginLoadingState());
-    try {
-      String? savedEmail = CacheHelper.getString(key: 'email');
-      String? savedPassword = CacheHelper.getString(key: 'password');
-      if (savedEmail == email && savedPassword == password) {
-        emit(LoginSuccessState());
-        return;
-      }
-      Response userResponse = await DioHelper.getData(
-        url: 'users/search?q=$email',
-      );
-      List users = userResponse.data['users'];
-      if (users.isEmpty) {
-        emit(LoginErrorState('Invalid credentials'));
-        return;
-      }
-      String username = users[0]['username'];
-      Response response = await DioHelper.postData(
-        url: 'auth/login',
-        data: {'username': username, 'password': password},
-      );
-      await CacheHelper.saveString(
-        key: 'token',
-        value: response.data['accessToken'],
-      );
+Future login({
+  required String email,
+  required String password,
+}) async {
+  emit(LoginLoadingState());
+
+  try {
+    String? savedEmail = CacheHelper.getString(key: 'email');
+    String? savedPassword = CacheHelper.getString(key: 'password');
+
+    /// LOGIN FROM SHARED PREFERENCES
+    if (savedEmail == email && savedPassword == password) {
       emit(LoginSuccessState());
-    } catch (e) {
-      emit(LoginErrorState(e.toString()));
+      return;
     }
+
+    /// LOGIN FROM API
+    Response userResponse = await DioHelper.getData(
+      url: 'users/search?q=$email',
+    );
+
+    List users = userResponse.data['users'];
+
+    if (users.isEmpty) {
+      emit(LoginErrorState('Invalid credentials'));
+      return;
+    }
+
+    var user = users.first;
+
+    Response response = await DioHelper.postData(
+      url: 'auth/login',
+      data: {
+        'username': user['username'],
+        'password': password,
+      },
+    );
+
+    /// SAVE TOKEN
+    await CacheHelper.saveString(
+      key: 'token',
+      value: response.data['accessToken'],
+    );
+
+    /// SAVE CURRENT USER DATA
+    await CacheHelper.saveString(
+      key: 'username',
+      value: user['username'],
+    );
+
+    await CacheHelper.saveString(
+      key: 'email',
+      value: user['email'],
+    );
+
+    emit(LoginSuccessState());
+
+  } catch (e) {
+    emit(LoginErrorState(e.toString()));
   }
+}
 
   Future register({
     required String username,
@@ -125,7 +152,7 @@ class ProjectCubit extends Cubit<ProjectStates> {
 
   Future getProjects() async {
     try {
-    emit(GetProjectsLoading());
+      emit(GetProjectsLoading());
       var response = await DioHelper.getDataProjects(url: 'posts');
       List data = response.data['posts'];
       List<ProjectModel> validProjects = [];
@@ -163,8 +190,36 @@ class ProjectCubit extends Cubit<ProjectStates> {
     projectTasks[index].selected = !projectTasks[index].selected;
     projectTasks[index].status = projectTasks[index].selected
         ? 'Done'
-        : 'Pending';
+        : 'In Progress';
 
     emit(UpdateTaskState());
+  }
+
+  void addTask({
+    required String title,
+    required String priority,
+    required String status,
+  }) {
+    projectTasks.insert(
+      0,
+      TaskModel(
+        title: title,
+        priority: priority,
+        status: status,
+        selected: false,
+      ),
+    );
+
+    emit(UpdateTaskState());
+  }
+
+  bool isDark = CacheHelper.getBoolean(key: 'isDark') ?? false;
+
+  void changeTheme() {
+    isDark = !isDark;
+
+    CacheHelper.saveBoolean(key: 'isDark', value: isDark);
+
+    emit(ChangeThemeState());
   }
 }

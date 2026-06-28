@@ -1,4 +1,5 @@
 import 'package:electropi/cubit/cubit.dart';
+import 'package:electropi/cubit/states.dart';
 import 'package:electropi/layout/layout.dart';
 import 'package:electropi/models/projects_model.dart';
 import 'package:electropi/modules/Login_Screen.dart';
@@ -18,29 +19,65 @@ Future<void> main() async {
   DioHelper.init();
   runApp(const MyApp());
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => ProjectCubit()..getProjects(),
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        initialRoute: '/splashRoute',
-        routes: {
-          '/login': (context) => LoginScreen(),
-          '/register': (context) => RegisterScreen(),
-          '/layout': (context) => ProjectLayout(),
-          '/onboarding': (context) => OnBoardingScreen(),
-          '/profile': (context) => ProfileScreen(),
-          '/projectDetails': (context) {
-            final project =
-                ModalRoute.of(context)!.settings.arguments as ProjectModel;
-            return ProjectDetailsScreen(project: project);
-          },
+      child: BlocBuilder<ProjectCubit, ProjectStates>(
+        builder: (context, state) {
+          var cubit = ProjectCubit.get(context);
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              brightness: Brightness.light,
+
+              scaffoldBackgroundColor: Colors.white,
+
+              cardColor: Colors.white,
+
+              textTheme: const TextTheme(
+                bodyLarge: TextStyle(color: Colors.black),
+                bodyMedium: TextStyle(color: Colors.black),
+              ),
+            ),
+
+            darkTheme: ThemeData(
+              brightness: Brightness.dark,
+
+              scaffoldBackgroundColor: const Color(0xff121212),
+
+              cardColor: const Color(0xff1E1E1E),
+
+              textTheme: const TextTheme(
+                bodyLarge: TextStyle(color: Colors.white),
+                bodyMedium: TextStyle(color: Colors.white),
+              ),
+
+              inputDecorationTheme: InputDecorationTheme(
+                filled: true,
+
+                fillColor: Color(0xff1E1E1E),
+              ),
+            ),
+            themeMode: cubit.isDark ? ThemeMode.dark : ThemeMode.light,
+            routes: {
+              '/login': (context) => LoginScreen(),
+              '/register': (context) => RegisterScreen(),
+              '/layout': (context) => ProjectLayout(),
+              '/onboarding': (context) => OnBoardingScreen(),
+              '/profile': (context) => ProfileScreen(),
+              '/projectDetails': (context) {
+                final project =
+                    ModalRoute.of(context)!.settings.arguments as ProjectModel;
+                return ProjectDetailsScreen(project: project);
+              },
+            },
+            home: const SplashScreen(),
+          );
         },
-        home: const SplashScreen(),
-        // home: OnBoardingScreen(),
       ),
     );
   }

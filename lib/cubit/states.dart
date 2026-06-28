@@ -81,3 +81,5 @@ class AddTaskError extends ProjectStates {
 
   AddTaskError(this.error);
 }
+
+class ChangeThemeState extends ProjectStates {}
