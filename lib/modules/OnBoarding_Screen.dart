@@ -18,7 +18,6 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   bool isFirst = true;
   Future<void> submit() async {
     await CacheHelper.saveData(key: 'onboarding_done', value: true);
-
     Navigator.pushReplacementNamed(context, '/login');
   }
   @override

@@ -36,27 +36,19 @@ Future login({
   try {
     String? savedEmail = CacheHelper.getString(key: 'email');
     String? savedPassword = CacheHelper.getString(key: 'password');
-
-    /// LOGIN FROM SHARED PREFERENCES
     if (savedEmail == email && savedPassword == password) {
       emit(LoginSuccessState());
       return;
     }
-
-    /// LOGIN FROM API
     Response userResponse = await DioHelper.getData(
       url: 'users/search?q=$email',
     );
-
     List users = userResponse.data['users'];
-
     if (users.isEmpty) {
       emit(LoginErrorState('Invalid credentials'));
       return;
     }
-
     var user = users.first;
-
     Response response = await DioHelper.postData(
       url: 'auth/login',
       data: {
@@ -64,26 +56,19 @@ Future login({
         'password': password,
       },
     );
-
-    /// SAVE TOKEN
     await CacheHelper.saveString(
       key: 'token',
       value: response.data['accessToken'],
     );
-
-    /// SAVE CURRENT USER DATA
     await CacheHelper.saveString(
       key: 'username',
       value: user['username'],
     );
-
     await CacheHelper.saveString(
       key: 'email',
       value: user['email'],
     );
-
     emit(LoginSuccessState());
-
   } catch (e) {
     emit(LoginErrorState(e.toString()));
   }
@@ -191,7 +176,6 @@ Future login({
     projectTasks[index].status = projectTasks[index].selected
         ? 'Done'
         : 'In Progress';
-
     emit(UpdateTaskState());
   }
 
@@ -209,17 +193,13 @@ Future login({
         selected: false,
       ),
     );
-
     emit(UpdateTaskState());
   }
 
   bool isDark = CacheHelper.getBoolean(key: 'isDark') ?? false;
-
   void changeTheme() {
     isDark = !isDark;
-
     CacheHelper.saveBoolean(key: 'isDark', value: isDark);
-
     emit(ChangeThemeState());
   }
 }

@@ -1,4 +1,3 @@
-import 'package:electropi/cubit/cubit.dart';
 import 'package:electropi/models/on_boarding_model.dart';
 import 'package:electropi/models/projects_model.dart';
 import 'package:electropi/models/tasks_model.dart';

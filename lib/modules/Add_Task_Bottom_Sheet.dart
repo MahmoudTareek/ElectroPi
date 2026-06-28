@@ -18,7 +18,6 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -44,9 +43,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 20),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -69,34 +66,25 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                   ),
                 ],
               ),
-
               const SizedBox(height: 20),
-
               Text(
                 "Task Title",
                 style: TextStyle(color: isDark ? Colors.white : Colors.black),
               ),
-
               const SizedBox(height: 8),
-
               TextField(
                 controller: titleController,
                 style: TextStyle(color: isDark ? Colors.white : Colors.black),
                 decoration: InputDecoration(
                   hintText: "e.g. Design landing page",
-
                   hintStyle: TextStyle(
                     color: isDark ? Colors.white54 : Colors.black54,
                   ),
-
                   filled: true,
-
                   fillColor: isDark ? const Color(0xff2A2A2A) : Colors.white,
-
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
@@ -107,16 +95,12 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 18),
-
               Text(
                 "Status",
                 style: TextStyle(color: isDark ? Colors.white : Colors.black),
               ),
-
               const SizedBox(height: 10),
-
               Wrap(
                 spacing: 8,
                 children: [
@@ -125,16 +109,12 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                   statusChip("Done"),
                 ],
               ),
-
               const SizedBox(height: 18),
-
               Text(
                 "Priority",
                 style: TextStyle(color: isDark ? Colors.white : Colors.black),
               ),
-
               const SizedBox(height: 10),
-
               Wrap(
                 spacing: 8,
                 children: [
@@ -143,9 +123,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                   priorityChip("High", Colors.red),
                 ],
               ),
-
               const SizedBox(height: 28),
-
               SizedBox(
                 width: double.infinity,
                 height: 55,
@@ -156,19 +134,15 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
-
                   onPressed: () {
                     if (titleController.text.trim().isEmpty) return;
-
                     ProjectCubit.get(context).addTask(
                       title: titleController.text.trim(),
                       priority: selectedPriority,
                       status: selectedStatus,
                     );
-
                     Navigator.pop(context);
                   },
-
                   child: const Text(
                     "Create Task",
                     style: TextStyle(color: Colors.white),
@@ -184,24 +158,18 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
 
   Widget statusChip(String value) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-
     final selected = selectedStatus == value;
-
     Color color;
-
     switch (value) {
       case "Done":
         color = Colors.green;
         break;
-
       case "In Progress":
         color = Colors.blue;
         break;
-
       default:
         color = Colors.orange;
     }
-
     return ChoiceChip(
       label: Text(
         value,
@@ -214,13 +182,9 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
           fontWeight: FontWeight.w600,
         ),
       ),
-
       selected: selected,
-
       selectedColor: color.withOpacity(.12),
-
       backgroundColor: isDark ? const Color(0xff2A2A2A) : Colors.grey.shade100,
-
       side: BorderSide(
         color: selected
             ? color.withOpacity(.25)
@@ -228,9 +192,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
             ? Colors.grey.shade700
             : Colors.grey.shade300,
       ),
-
       checkmarkColor: color,
-
       onSelected: (_) {
         setState(() {
           selectedStatus = value;
@@ -241,9 +203,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
 
   Widget priorityChip(String value, Color color) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-
     final selected = selectedPriority == value;
-
     return ChoiceChip(
       label: Text(
         value,
@@ -256,13 +216,9 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
           fontWeight: FontWeight.w600,
         ),
       ),
-
       selected: selected,
-
       selectedColor: color.withOpacity(.12),
-
       backgroundColor: isDark ? const Color(0xff2A2A2A) : Colors.grey.shade100,
-
       side: BorderSide(
         color: selected
             ? color.withOpacity(.25)
@@ -270,9 +226,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
             ? Colors.grey.shade700
             : Colors.grey.shade300,
       ),
-
       checkmarkColor: color,
-
       onSelected: (_) {
         setState(() {
           selectedPriority = value;

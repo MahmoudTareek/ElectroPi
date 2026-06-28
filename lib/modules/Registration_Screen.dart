@@ -33,16 +33,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       builder: (context, state) {
         return Scaffold(
-          backgroundColor:
-              isDark ? const Color(0xff121212) : Colors.white,
+          backgroundColor: isDark ? const Color(0xff121212) : Colors.white,
 
           body: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.only(
-                top: 100,
-                left: 20,
-                right: 20,
-              ),
+              padding: const EdgeInsets.only(top: 100, left: 20, right: 20),
 
               child: Form(
                 key: formKey,
@@ -51,7 +46,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
 
                   children: [
-                    /// TITLE
                     Text(
                       'Create',
 
@@ -59,10 +53,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         fontSize: 40,
                         fontWeight: FontWeight.bold,
 
-                        color:
-                            isDark
-                                ? Colors.white
-                                : Colors.black,
+                        color: isDark ? Colors.white : Colors.black,
                       ),
                     ),
 
@@ -79,8 +70,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     const SizedBox(height: 10),
 
                     Padding(
-                      padding:
-                          const EdgeInsets.only(right: 150),
+                      padding: const EdgeInsets.only(right: 150),
 
                       child: Text(
                         'Register to get started',
@@ -88,17 +78,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         style: TextStyle(
                           fontSize: 18,
 
-                          color:
-                              isDark
-                                  ? Colors.white70
-                                  : Colors.grey[600],
+                          color: isDark ? Colors.white70 : Colors.grey[600],
                         ),
                       ),
                     ),
 
                     const SizedBox(height: 50),
 
-                    /// USERNAME
                     defaultFormField(
                       context: context,
 
@@ -121,7 +107,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                     const SizedBox(height: 20),
 
-                    /// EMAIL
                     defaultFormField(
                       context: context,
 
@@ -134,8 +119,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       prefix: Icons.email_outlined,
 
                       validate: (value) {
-                        if (value == null ||
-                            value.trim().isEmpty) {
+                        if (value == null || value.trim().isEmpty) {
                           return 'Email is required';
                         }
 
@@ -151,7 +135,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                     const SizedBox(height: 20),
 
-                    /// PASSWORD
                     defaultFormField(
                       context: context,
 
@@ -163,10 +146,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                       prefix: Icons.lock_outline,
 
-                      suffix:
-                          isPassword
-                              ? Icons.visibility
-                              : Icons.visibility_off,
+                      suffix: isPassword
+                          ? Icons.visibility
+                          : Icons.visibility_off,
 
                       suffixPrssed: () {
                         setState(() {
@@ -177,18 +159,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       isPassword: isPassword,
 
                       validate: (value) {
-                        if (value == null ||
-                            value.isEmpty) {
+                        if (value == null || value.isEmpty) {
                           return 'Password is required';
                         }
 
                         if (value.length < 8 ||
-                            !RegExp(
-                              r'[A-Z]',
-                            ).hasMatch(value) ||
-                            !RegExp(
-                              r'\d',
-                            ).hasMatch(value)) {
+                            !RegExp(r'[A-Z]').hasMatch(value) ||
+                            !RegExp(r'\d').hasMatch(value)) {
                           return 'Password must contain uppercase and number';
                         }
 
@@ -198,10 +175,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                     const SizedBox(height: 20),
 
-                    /// LOGIN TEXT
                     Row(
-                      mainAxisAlignment:
-                          MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
 
                       children: [
                         Text(
@@ -210,27 +185,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           style: TextStyle(
                             fontSize: 14,
 
-                            color:
-                                isDark
-                                    ? Colors.white70
-                                    : Colors.black,
+                            color: isDark ? Colors.white70 : Colors.black,
                           ),
                         ),
 
                         TextButton(
                           onPressed: () {
-                            Navigator.pushNamed(
-                              context,
-                              '/login',
-                            );
+                            Navigator.pushNamed(context, '/login');
                           },
 
                           child: const Text(
                             'Sign In',
 
-                            style: TextStyle(
-                              color: primaryColor,
-                            ),
+                            style: TextStyle(color: primaryColor),
                           ),
                         ),
                       ],
@@ -238,22 +205,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                     const SizedBox(height: 20),
 
-                    /// REGISTER BUTTON
                     defaultButton(
                       function: () {
-                        if (formKey.currentState!
-                            .validate()) {
-                          ProjectCubit.get(context)
-                              .register(
-                                username:
-                                    userNameController.text,
+                        if (formKey.currentState!.validate()) {
+                          ProjectCubit.get(context).register(
+                            username: userNameController.text,
 
-                                email:
-                                    emailController.text,
+                            email: emailController.text,
 
-                                password:
-                                    passwordController.text,
-                              );
+                            password: passwordController.text,
+                          );
                         }
                       },
 
