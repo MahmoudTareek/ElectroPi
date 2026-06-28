@@ -129,24 +129,39 @@ class ProjectCubit extends Cubit<ProjectStates> {
 
   Future updateProfile({
     required String username,
+
     required String email,
   }) async {
     emit(UpdateProfileLoadingState());
+
     try {
-      String? token = CacheHelper.getString(key: 'token');
-      if (token != null) {
-        try {
-          await DioHelper.putData(
-            url: 'users/1',
-            data: {"username": username, "email": email},
-          );
-        } catch (_) {}
+      String? oldName = CacheHelper.getString(key: 'username');
+
+      String? oldEmail = CacheHelper.getString(key: 'email');
+
+      if (oldName == username && oldEmail == email) {
+        emit(UpdateProfileErrorState('No changes made'));
+
+        return;
       }
+
+      String? token = CacheHelper.getString(key: 'token');
+
+      if (token != null) {
+        await DioHelper.putData(
+          url: 'users/1',
+
+          data: {'username': username, 'email': email},
+        );
+      }
+
       await CacheHelper.saveString(key: 'username', value: username);
+
       await CacheHelper.saveString(key: 'email', value: email);
+
       emit(UpdateProfileSuccessState());
     } catch (e) {
-      emit(UpdateProfileErrorState(e.toString()));
+      emit(UpdateProfileErrorState('Failed to update profile'));
     }
   }
 
