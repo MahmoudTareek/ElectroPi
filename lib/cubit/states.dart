@@ -1,4 +1,3 @@
-// states for News App
 abstract class ProjectStates {}
 
 class ProjectInitialState extends ProjectStates {}
@@ -49,4 +48,36 @@ class UpdateProfileErrorState
   UpdateProfileErrorState(
     this.error,
   );
+}
+
+class GetProjectsLoading extends ProjectStates {}
+
+class GetProjectsSuccess extends ProjectStates {}
+
+class GetProjectsError extends ProjectStates {
+  final String error;
+
+  GetProjectsError(this.error);
+}
+
+class GetTasksLoading extends ProjectStates {}
+
+class GetTasksSuccess extends ProjectStates {}
+
+class GetTasksError extends ProjectStates {
+  final String error;
+
+  GetTasksError(this.error);
+}
+
+class UpdateTaskState extends ProjectStates {}
+
+class AddTaskLoading extends ProjectStates {}
+
+class AddTaskSuccess extends ProjectStates {}
+
+class AddTaskError extends ProjectStates {
+  final String error;
+
+  AddTaskError(this.error);
 }

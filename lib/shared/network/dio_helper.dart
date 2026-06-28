@@ -40,4 +40,10 @@ class DioHelper {
   }) async {
     return await dio.put(url, data: data, queryParameters: query);
   }
+
+  static Future<Response> getDataProjects({
+required String url,
+}) async {
+return await dio.get(url);
+}
 }

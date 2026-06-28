@@ -12,16 +12,12 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var cubit = ProjectCubit.get(context);
-
     String? userName = CacheHelper.getString(key: 'username');
     String? email = CacheHelper.getString(key: 'email');
-
     TextEditingController userNameController = TextEditingController(
       text: userName,
     );
-
     TextEditingController emailController = TextEditingController(text: email);
-
     return BlocConsumer<ProjectCubit, ProjectStates>(
       listener: (context, state) {
         Fluttertoast.showToast(
@@ -31,12 +27,10 @@ class ProfileScreen extends StatelessWidget {
       },
       builder: (context, state) => Scaffold(
         backgroundColor: const Color(0xffF7F9FC),
-
         body: SafeArea(
           child: SingleChildScrollView(
             child: Column(
               children: [
-                /// Header
                 Container(
                   height: 260,
                   width: double.infinity,
@@ -50,7 +44,6 @@ class ProfileScreen extends StatelessWidget {
                       bottom: Radius.circular(35),
                     ),
                   ),
-
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -60,7 +53,6 @@ class ProfileScreen extends StatelessWidget {
                           shape: BoxShape.circle,
                           color: Colors.white,
                         ),
-
                         child: CircleAvatar(
                           radius: 55,
                           backgroundImage: NetworkImage(
@@ -68,9 +60,7 @@ class ProfileScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-
                       SizedBox(height: 16),
-
                       Text(
                         userName ?? "Guest",
                         style: TextStyle(
@@ -79,9 +69,7 @@ class ProfileScreen extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-
                       SizedBox(height: 6),
-
                       Text(
                         email ?? "",
                         style: TextStyle(color: Colors.white70, fontSize: 15),
@@ -89,15 +77,12 @@ class ProfileScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-
                 Padding(
                   padding: const EdgeInsets.all(22),
-
                   child: Column(
                     children: [
                       Container(
                         padding: EdgeInsets.all(20),
-
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(25),
@@ -109,7 +94,6 @@ class ProfileScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-
                         child: Column(
                           children: [
                             defaultFormField(
@@ -118,7 +102,6 @@ class ProfileScreen extends StatelessWidget {
                               type: TextInputType.name,
                               label: "User Name",
                               prefix: Icons.person_outline,
-
                               validate: (value) {
                                 if (value!.isEmpty) {
                                   return "Please enter your name";
@@ -126,16 +109,13 @@ class ProfileScreen extends StatelessWidget {
                                 return null;
                               },
                             ),
-
                             SizedBox(height: 20),
-
                             defaultFormField(
                               context: context,
                               controller: emailController,
                               type: TextInputType.emailAddress,
                               label: "Email",
                               prefix: Icons.email_outlined,
-
                               validate: (value) {
                                 if (value!.isEmpty) {
                                   return "Please enter email";
@@ -146,14 +126,10 @@ class ProfileScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-
                       SizedBox(height: 35),
-
-                      /// Update Button
                       SizedBox(
                         width: double.infinity,
                         height: 58,
-
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: primaryColor,
@@ -161,15 +137,12 @@ class ProfileScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(18),
                             ),
                           ),
-
                           onPressed: () {
                             cubit.updateProfile(
                               username: userNameController.text,
-
                               email: emailController.text,
                             );
                           },
-
                           child: Text(
                             "Update Profile",
                             style: TextStyle(
@@ -180,14 +153,10 @@ class ProfileScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-
                       SizedBox(height: 16),
-
-                      /// Logout
                       SizedBox(
                         width: double.infinity,
                         height: 58,
-
                         child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
                             side: BorderSide(color: Colors.red),
@@ -195,22 +164,17 @@ class ProfileScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(18),
                             ),
                           ),
-
                           onPressed: () async {
                             cubit.currentIndex = 0;
-
                             await CacheHelper.removeData(key: 'token');
-
                             userNameController.clear();
                             emailController.clear();
-
                             Navigator.pushNamedAndRemoveUntil(
                               context,
                               '/login',
                               (route) => false,
                             );
                           },
-
                           child: Text(
                             "Logout",
                             style: TextStyle(

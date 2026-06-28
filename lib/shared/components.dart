@@ -1,12 +1,11 @@
-// Components file I made to avoid code repetition and make the code more organized and reusable. Moreover it makes it easier to maintain and update the code in the future.
-import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
+import 'package:electropi/cubit/cubit.dart';
+import 'package:electropi/models/on_boarding_model.dart';
+import 'package:electropi/models/projects_model.dart';
 import 'package:electropi/models/tasks_model.dart';
 import 'package:flutter/material.dart';
-// import 'package:electropi/modules/details/detail_screen.dart';
 
 const primaryColor = Color(0xFF04A49A);
 const secondaryColor = Color(0xFF283943);
-// A reusable button widget with customizable properties, used in login screen as login button, profile screens as update and logout buttons
 Widget defaultButton({
   required VoidCallback function,
   bool isDisabled = false,
@@ -34,118 +33,134 @@ Widget defaultButton({
   ),
 );
 
-// A reusable form field widget with customizable properties, used in login, register and profile screens
 Widget defaultFormField({
   required BuildContext context,
   required TextEditingController controller,
   required TextInputType type,
-
   bool isPassword = false,
-
   Function(String)? onSubmit,
   Function(String)? onChange,
-
   VoidCallback? onTap,
-
   required String? Function(String?) validate,
-
   String? label,
-
   IconData? prefix,
-
   IconData? suffix,
-
   VoidCallback? suffixPrssed,
-
   bool isClickable = true,
 }) => TextFormField(
   controller: controller,
-
   keyboardType: type,
-
   obscureText: isPassword,
-
   enabled: isClickable,
-
   onFieldSubmitted: onSubmit,
-
   onChanged: onChange,
-
   onTap: onTap,
-
   validator: validate,
-
   decoration: InputDecoration(
-    /// شكل الخلفية
     filled: true,
     fillColor: Colors.white,
-
-    /// النص اللي فوق
     labelText: label,
-
     floatingLabelBehavior: FloatingLabelBehavior.auto,
-
     labelStyle: TextStyle(color: Colors.grey[500], fontSize: 14),
-
-    /// الايقونة
     prefixIcon: prefix != null
         ? Padding(
             padding: const EdgeInsets.only(left: 8),
             child: Icon(prefix, color: Colors.grey[700]),
           )
         : null,
-
     prefixIconConstraints: const BoxConstraints(minWidth: 50),
-
     suffixIcon: suffix != null
         ? IconButton(onPressed: suffixPrssed, icon: Icon(suffix))
         : null,
-
     contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-
     errorMaxLines: 3,
-
-    /// العادي
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(18),
 
       borderSide: BorderSide(color: Colors.grey.shade300),
     ),
-
-    /// لما يركز
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(18),
 
       borderSide: BorderSide(color: primaryColor, width: 1.5),
     ),
-
-    /// بدون فوكس
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(18),
 
       borderSide: BorderSide(color: Colors.grey.shade300),
     ),
-
     errorBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(18),
-
       borderSide: const BorderSide(color: Colors.red),
     ),
   ),
 );
 
+Widget buildBoardingItem(BoardingModel model) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Expanded(
+        flex: 3,
+        child: Center(
+          child: Image.asset(
+            model.image,
+            width: 420,
+            height: 420,
+            fit: BoxFit.contain,
+          ),
+        ),
+      ),
+      Expanded(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                model.title,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(model.body, style: const TextStyle(fontSize: 14)),
+            ],
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
+Color getStatusColor(String status) {
+  switch (status) {
+    case 'Done':
+      return Colors.green;
+
+    case 'Pending':
+      return Colors.orange;
+
+    case 'In Progress':
+      return Colors.blue;
+
+    default:
+      return Colors.grey;
+  }
+}
+
+Color getStatusBackground(String status) {
+  return getStatusColor(status).withOpacity(.15);
+}
+
 class ProjectCard extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final String status;
+  final ProjectModel project;
   final IconData icon;
   final Color iconColor;
-
   const ProjectCard({
     super.key,
-    required this.title,
-    required this.subtitle,
-    required this.status,
+    required this.project,
     required this.icon,
     required this.iconColor,
   });
@@ -154,7 +169,9 @@ class ProjectCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/projectDetails', arguments: title);
+        ProjectCubit.get(context).getProjectTasks(project.userId).then((_) {
+          Navigator.pushNamed(context, '/projectDetails', arguments: project);
+        });
       },
       child: Container(
         padding: const EdgeInsets.all(18),
@@ -180,46 +197,40 @@ class ProjectCard extends StatelessWidget {
               ),
               child: Icon(icon, color: iconColor),
             ),
-
             const SizedBox(width: 14),
-
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    project.title,
+                    maxLines: 2,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
                     ),
                   ),
-
                   const SizedBox(height: 5),
-
-                  Text(subtitle, style: TextStyle(color: Colors.grey[600])),
+                  Text(
+                    project.description,
+                    maxLines: 1,
+                    textAlign: TextAlign.justify,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
                 ],
               ),
             ),
-
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: status == "Active"
-                    ? Colors.green.withOpacity(.15)
-                    : status == "Pending"
-                    ? Colors.orange.withOpacity(.15)
-                    : Colors.blue.withOpacity(.15),
+                color: getStatusBackground(project.status),
                 borderRadius: BorderRadius.circular(30),
               ),
               child: Text(
-                status,
+                project.status,
                 style: TextStyle(
-                  color: status == "Active"
-                      ? Colors.green
-                      : status == "Pending"
-                      ? Colors.orange
-                      : Colors.blue,
+                  color: getStatusColor(project.status),
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -233,18 +244,14 @@ class ProjectCard extends StatelessWidget {
 
 class TaskCard extends StatelessWidget {
   final TaskModel task;
-
   final VoidCallback onTap;
-
   const TaskCard({super.key, required this.task, required this.onTap});
   Color get statusColor {
     switch (task.status) {
       case "Done":
         return Colors.green;
-
       case "In Progress":
         return Colors.blue;
-
       default:
         return Colors.orange;
     }
@@ -273,27 +280,22 @@ class TaskCard extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: onTap,
-
             child: Container(
               height: 24,
               width: 24,
-
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-
-                color: task.isSelected ? primaryColor : Colors.white,
-
+                color: (task.selected || task.status == "Done")
+                    ? primaryColor
+                    : Colors.white,
                 border: Border.all(color: primaryColor),
               ),
-
-              child: task.isSelected
+              child: (task.selected || task.status == "Done")
                   ? const Icon(Icons.check, color: Colors.white, size: 16)
                   : null,
             ),
           ),
-
           const SizedBox(width: 16),
-
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -305,9 +307,7 @@ class TaskCard extends StatelessWidget {
                     fontSize: 18,
                   ),
                 ),
-
                 const SizedBox(height: 8),
-
                 Text(
                   task.priority,
                   style: TextStyle(
@@ -318,16 +318,18 @@ class TaskCard extends StatelessWidget {
               ],
             ),
           ),
-
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
-              color: statusColor.withOpacity(.12),
+              color: getStatusBackground(task.status),
               borderRadius: BorderRadius.circular(25),
             ),
             child: Text(
               task.status,
-              style: TextStyle(color: statusColor, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                color: getStatusColor(task.status),
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],

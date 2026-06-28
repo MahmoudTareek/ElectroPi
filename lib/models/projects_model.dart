@@ -1,56 +1,24 @@
-import 'package:electropi/shared/components.dart';
-import 'package:flutter/material.dart';
-
 class ProjectModel {
+  final int id;
   final String title;
-  final String subtitle;
-  final String status;
-  final IconData icon;
-  final Color iconColor;
-
+  final String description;
+  String status;
+  final int userId;
   ProjectModel({
+    required this.id,
     required this.title,
-    required this.subtitle,
+    required this.description,
     required this.status,
-    required this.icon,
-    required this.iconColor,
+    required this.userId,
   });
+
+  factory ProjectModel.fromJson(Map<String, dynamic> json) {
+    return ProjectModel(
+      id: json['id'],
+      title: json['title'],
+      description: json['body'],
+      status: ['Pending', 'In Progress', 'Done'][json['id'] % 3],
+      userId: json['userId'],
+    );
+  }
 }
-
-
-final List<Widget> projects = [
-    ProjectCard(
-      title: "Website Redesign",
-      subtitle: "Redesign marketing website",
-      status: "Active",
-      icon: Icons.web,
-      iconColor: Colors.blue,
-    ),
-
-    ProjectCard(
-      title: "Mobile App",
-      subtitle: "Build cross platform app",
-      status: "In Progress",
-      icon: Icons.phone_android,
-      iconColor: Colors.deepPurple,
-    ),
-
-    ProjectCard(
-      title: "API Integration",
-      subtitle: "Integrate payment gateway",
-      status: "Pending",
-      icon: Icons.api,
-      iconColor: Colors.amber,
-    ),
-
-    ProjectCard(
-      title: "Dashboard",
-      subtitle: "Admin dashboard development",
-      status: "Active",
-      icon: Icons.dashboard,
-      iconColor: Colors.green,
-    ),
-
-    // جرب الـ Empty State:
-    // سيب الليست فاضية []
-  ];

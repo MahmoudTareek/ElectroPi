@@ -1,207 +1,190 @@
+import 'package:electropi/cubit/cubit.dart';
+import 'package:electropi/cubit/states.dart';
+import 'package:electropi/models/projects_model.dart';
 import 'package:electropi/modules/Add_Task_Bottom_Sheet.dart';
 import 'package:electropi/shared/components.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ProjectDetailsScreen extends StatefulWidget {
-  final String? projectTitle;
-  const ProjectDetailsScreen({super.key, this.projectTitle});
+class ProjectDetailsScreen extends StatelessWidget {
+  final ProjectModel project;
 
-  @override
-  State<ProjectDetailsScreen> createState() => _ProjectDetailsScreenState();
-}
+  const ProjectDetailsScreen({super.key, required this.project});
 
-class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
-  // int currentIndex = 1;
-
-  final List<TaskModel> tasks = [
-    TaskModel(title: "Create wireframes", priority: "High", status: "Done"),
-    TaskModel(
-      title: "Design home page",
-      priority: "High",
-      status: "In Progress",
-    ),
-    TaskModel(
-      title: "Implement responsive UI",
-      priority: "Medium",
-      status: "Pending",
-    ),
-    TaskModel(title: "Integrate CMS", priority: "Low", status: "Pending"),
-    TaskModel(
-      title: "Design home page",
-      priority: "High",
-      status: "In Progress",
-    ),
-    TaskModel(
-      title: "Implement responsive UI",
-      priority: "Medium",
-      status: "Pending",
-    ),
-  ];
-
-  bool get hasSelected => tasks.any((e) => e.isSelected);
-
-  void toggleTask(int index) {
-    setState(() {
-      tasks[index].isSelected = !tasks[index].isSelected;
-    });
+  bool hasSelected(ProjectCubit cubit) {
+    return cubit.projectTasks.any((e) => e.selected);
   }
-
-  void markAsDone() {
-    setState(() {
-      for (var task in tasks) {
-        if (task.isSelected) {
-          task.status = "Done";
-
-          task.isSelected = false;
-        }
+  void markAsDone(ProjectCubit cubit) {
+    for (var task in cubit.projectTasks) {
+      if (task.selected) {
+        task.status = 'Done';
+        task.selected = false;
       }
-    });
+    }
   }
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3,
-      child: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: primaryColor,
-          foregroundColor: Colors.white,
-          onPressed: () {
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              backgroundColor: Colors.transparent,
-              builder: (_) => const AddTaskBottomSheet(),
-            );
-          },
-          child: const Icon(Icons.add),
-        ),
-        backgroundColor: Colors.white,
-        body: Column(
-          children: [
-            /// HEADER
-            Container(
-              color: primaryColor,
-              child: Column(
-                children: [
-                  SizedBox(height: MediaQuery.of(context).padding.top),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 18,
-                    ),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: const Icon(
-                            Icons.arrow_back_ios,
-                            color: Colors.white,
-                          ),
-                        ),
-
-                        Expanded(
-                          child: Center(
-                            child: Text(
-                              widget.projectTitle ?? "Project Details",
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const TabBar(
-                    indicatorColor: primaryColor,
-                    indicatorWeight: 3,
-                    labelColor: Colors.white,
-                    unselectedLabelColor: Colors.white70,
-                    tabs: [
-                      Tab(text: "Tasks"),
-                      Tab(text: "Details"),
-                      Tab(text: "Activity"),
-                    ],
-                  ),
-                ],
-              ),
+      child: BlocBuilder<ProjectCubit, ProjectStates>(
+        builder: (context, state) {
+          var cubit = ProjectCubit.get(context);
+          return Scaffold(
+            backgroundColor: Colors.white,
+            floatingActionButton: FloatingActionButton(
+              backgroundColor: primaryColor,
+              foregroundColor: Colors.white,
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  backgroundColor: Colors.transparent,
+                  builder: (_) => const AddTaskBottomSheet(),
+                );
+              },
+              child: const Icon(Icons.add),
             ),
-
-            /// BODY
-            Expanded(
-              child: TabBarView(
-                children: [
-                  /// TASKS TAB
-                  Column(
+            body: Column(
+              children: [
+                Container(
+                  color: primaryColor,
+                  child: Column(
                     children: [
+                      SizedBox(height: MediaQuery.of(context).padding.top),
                       Padding(
-                        padding: const EdgeInsets.all(20),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 18,
+                        ),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
                           children: [
-                            Text(
-                              "Tasks (${tasks.length})",
-
-                              style: const TextStyle(
-                                fontSize: 22,
-
-                                fontWeight: FontWeight.bold,
+                            IconButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              icon: const Icon(
+                                Icons.arrow_back_ios,
+                                color: Colors.white,
                               ),
                             ),
-
-                            if (hasSelected)
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.green,
-                                ),
-
-                                onPressed: markAsDone,
-
-                                child: const Text(
-                                  "Done",
-
-                                  style: TextStyle(color: Colors.white),
+                            Expanded(
+                              child: Center(
+                                child: Text(
+                                  project.title,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
+                            ),
+                            const SizedBox(width: 40),
                           ],
                         ),
                       ),
-
-                      Expanded(
-                        child: ListView.separated(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          itemCount: tasks.length,
-                          separatorBuilder: (_, __) =>
-                              const SizedBox(height: 18),
-                          itemBuilder: (context, index) {
-                            return TaskCard(
-                              task: tasks[index],
-
-                              onTap: () {
-                                toggleTask(index);
-                              },
-                            );
-                          },
-                        ),
+                      const TabBar(
+                        indicatorColor: Colors.white,
+                        labelColor: Colors.white,
+                        unselectedLabelColor: Colors.white70,
+                        tabs: [
+                          Tab(text: "Tasks"),
+                          Tab(text: "Details"),
+                          Tab(text: "Activity"),
+                        ],
                       ),
                     ],
                   ),
-
-                  const Center(child: Text("Details Screen")),
-
-                  const Center(child: Text("Activity Screen")),
-                ],
-              ),
+                ),
+                Expanded(
+                  child: TabBarView(
+                    children: [
+                      Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Tasks (${cubit.projectTasks.length})',
+                                  style: const TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          if (state is GetTasksLoading)
+                            const Expanded(
+                              child: Center(child: CircularProgressIndicator()),
+                            )
+                          else
+                            Expanded(
+                              child: ListView.separated(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                ),
+                                itemCount: cubit.projectTasks.length,
+                                separatorBuilder: (_, __) =>
+                                    const SizedBox(height: 16),
+                                itemBuilder: (context, index) {
+                                  return TaskCard(
+                                    task: cubit.projectTasks[index],
+                                    onTap: () {
+                                      cubit.toggleTask(index);
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                        ],
+                      ),
+                      SingleChildScrollView(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Description',
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(project.description),
+                            const SizedBox(height: 30),
+                            const Text(
+                              'Status',
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: primaryColor.withOpacity(.1),
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              child: Text(project.status),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Center(child: Text('No Activity Yet')),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

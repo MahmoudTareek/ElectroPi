@@ -1,4 +1,3 @@
-// Layout for the news app using Bloc pattern and BottomNavigationBar for navigation between different screens of the app.
 import 'package:electropi/shared/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

@@ -16,13 +16,11 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
   bool isLast = false;
   bool isFirst = true;
-
   Future<void> submit() async {
     await CacheHelper.saveData(key: 'onboarding_done', value: true);
 
     Navigator.pushReplacementNamed(context, '/login');
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,29 +31,24 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
             child: PageView.builder(
               controller: boardController,
               physics: const BouncingScrollPhysics(),
-
               onPageChanged: (index) {
                 setState(() {
                   isLast = index == boarding.length - 1;
                   isFirst = index == 0;
                 });
               },
-
               itemBuilder: (context, index) =>
                   buildBoardingItem(boarding[index]),
 
               itemCount: boarding.length,
             ),
           ),
-
           Padding(
             padding: const EdgeInsets.all(20),
-
             child: Row(
               children: [
                 SmoothPageIndicator(
                   controller: boardController,
-
                   effect: const ScrollingDotsEffect(
                     dotColor: Colors.grey,
                     activeDotColor: primaryColor,
@@ -63,12 +56,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                     dotWidth: 10,
                     spacing: 5,
                   ),
-
                   count: boarding.length,
                 ),
-
                 const Spacer(),
-
                 if (!isFirst)
                   TextButton(
                     onPressed: () {
@@ -85,7 +75,6 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       ),
                     ),
                   ),
-
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
@@ -93,7 +82,6 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-
                   onPressed: () {
                     if (isLast) {
                       submit();
@@ -104,16 +92,13 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       );
                     }
                   },
-
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 10,
                       vertical: 8,
                     ),
-
                     child: Text(
                       isLast ? 'Get Started' : 'Next',
-
                       style: const TextStyle(color: Colors.white),
                     ),
                   ),
@@ -123,55 +108,6 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget buildBoardingItem(BoardingModel model) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-
-      children: [
-        Expanded(
-          flex: 3,
-
-          child: Center(
-            child: Image.asset(
-              model.image,
-
-              width: 420,
-
-              height: 420,
-
-              fit: BoxFit.contain,
-            ),
-          ),
-        ),
-
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-
-              children: [
-                Text(
-                  model.title,
-
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-
-                const SizedBox(height: 8),
-
-                Text(model.body, style: const TextStyle(fontSize: 14)),
-              ],
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
