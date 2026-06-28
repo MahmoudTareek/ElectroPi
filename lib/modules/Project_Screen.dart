@@ -1,6 +1,5 @@
 import 'package:electropi/cubit/cubit.dart';
 import 'package:electropi/cubit/states.dart';
-import 'package:electropi/models/projects_model.dart';
 import 'package:electropi/modules/Empty_Projects_Screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -100,7 +99,7 @@ class ProjectsScreen extends StatelessWidget {
 
                           suffixIcon: Icon(Icons.tune),
 
-                          hintText: "Search projects...",
+                          hintText: "Search for a project...",
 
                           contentPadding: EdgeInsets.only(top: 15),
                         ),
