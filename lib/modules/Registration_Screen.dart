@@ -261,23 +261,46 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                         SizedBox(height: height * .02),
 
-                        state is RegisterLoadingState
-                            ? const Center(child: CircularProgressIndicator())
-                            : defaultButton(
-                                function: () {
-                                  if (formKey.currentState!.validate()) {
-                                    ProjectCubit.get(context).register(
-                                      username: userNameController.text,
-                                      email: emailController.text,
-                                      password: passwordController.text,
-                                    );
-                                  }
-                                },
+                        // state is RegisterLoadingState
+                        //     ? const Center(child: CircularProgressIndicator())
+                        //     : defaultButton(
+                        //         function: () {
+                        //           if (formKey.currentState!.validate()) {
+                        //             ProjectCubit.get(context).register(
+                        //               username: userNameController.text,
+                        //               email: emailController.text,
+                        //               password: passwordController.text,
+                        //             );
+                        //           }
+                        //         },
 
-                                text: 'Register',
+                        //         text: 'Register',
 
-                                radius: 12,
-                              ),
+                        //         radius: 12,
+                        //       ),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+
+                          child: state is RegisterLoadingState
+                              ? const Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : defaultButton(
+                                  function: () {
+                                    if (formKey.currentState!.validate()) {
+                                      ProjectCubit.get(context).register(
+                                        username: userNameController.text,
+                                        email: emailController.text,
+                                        password: passwordController.text,
+                                      );
+                                    }
+                                  },
+
+                                  text: 'Register',
+
+                                  radius: 12,
+                                ),
+                        ),
 
                         SizedBox(height: height * .04),
                       ],

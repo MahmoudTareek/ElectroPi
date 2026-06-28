@@ -6,10 +6,12 @@ import 'package:electropi/modules/Login_Screen.dart';
 import 'package:electropi/modules/OnBoarding_Screen.dart';
 import 'package:electropi/modules/Profile_Screen.dart';
 import 'package:electropi/modules/Project_Details_Screen.dart';
+import 'package:electropi/modules/Project_Screen.dart';
 import 'package:electropi/modules/Registration_Screen.dart';
 import 'package:electropi/modules/Splash_Screen.dart';
 import 'package:electropi/shared/network/dio_helper.dart';
 import 'package:electropi/shared/network/local/cache_helper.dart';
+import 'package:electropi/shared/page_transition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -63,17 +65,23 @@ class MyApp extends StatelessWidget {
               ),
             ),
             themeMode: cubit.isDark ? ThemeMode.dark : ThemeMode.light,
-            routes: {
-              '/login': (context) => LoginScreen(),
-              '/register': (context) => RegisterScreen(),
-              '/layout': (context) => ProjectLayout(),
-              '/onboarding': (context) => OnBoardingScreen(),
-              '/profile': (context) => ProfileScreen(),
-              '/projectDetails': (context) {
-                final project =
-                    ModalRoute.of(context)!.settings.arguments as ProjectModel;
-                return ProjectDetailsScreen(project: project);
-              },
+            onGenerateRoute: (RouteSettings settings) {
+              switch (settings.name) {
+                case '/login':
+                  return AppPageRoute(child: const LoginScreen());
+
+                case '/register':
+                  return AppPageRoute(child: const RegisterScreen());
+
+                case '/layout':
+                  return AppPageRoute(child: ProjectLayout());
+
+                case '/project':
+                  return AppPageRoute(child: ProjectsScreen());
+
+                default:
+                  return AppPageRoute(child: const LoginScreen());
+              }
             },
             home: const SplashScreen(),
           );

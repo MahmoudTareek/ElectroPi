@@ -219,24 +219,46 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         SizedBox(height: height * .06),
 
-                        state is LoginLoadingState
-                            ? const Center(child: CircularProgressIndicator())
-                            : defaultButton(
-                                function: () {
-                                  if (formKey.currentState!.validate()) {
-                                    ProjectCubit.get(context).login(
-                                      email: emailController.text,
+                        // state is LoginLoadingState
+                        //     ? const Center(child: CircularProgressIndicator())
+                        //     : defaultButton(
+                        //         function: () {
+                        //           if (formKey.currentState!.validate()) {
+                        //             ProjectCubit.get(context).login(
+                        //               email: emailController.text,
 
-                                      password: passwordController.text,
-                                    );
-                                  }
-                                },
+                        //               password: passwordController.text,
+                        //             );
+                        //           }
+                        //         },
 
-                                text: 'Login',
+                        //         text: 'Login',
 
-                                radius: 12,
-                              ),
+                        //         radius: 12,
+                        //       ),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
 
+                          child: state is LoginLoadingState
+                              ? const Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : defaultButton(
+                                  function: () {
+                                    if (formKey.currentState!.validate()) {
+                                      ProjectCubit.get(context).login(
+                                        email: emailController.text,
+
+                                        password: passwordController.text,
+                                      );
+                                    }
+                                  },
+
+                                  text: 'Login',
+
+                                  radius: 12,
+                                ),
+                        ),
                         SizedBox(height: height * .015),
 
                         Row(
