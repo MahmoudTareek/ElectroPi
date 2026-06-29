@@ -31,7 +31,7 @@ The application allows users to authenticate, manage projects and tasks, update 
 
 ---
 
-## Onboarding Screen
+## Onboarding Screens
 
 <img src="assets/SS/2.jpg" width="300"/>
 <img src="assets/SS/3.jpg" width="300"/>
@@ -202,7 +202,3 @@ lib
 * SharedPreferences
 
 ---
-
-Flutter Documentation:
-
-https://docs.flutter.dev/
