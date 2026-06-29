@@ -20,6 +20,9 @@ The application allows users to authenticate, manage projects and tasks, update 
 * Dark Mode Support
 * Responsive UI
 * State Management using BLoC
+* Smooth Screen Transitions & Animations
+* Unit Testing
+* Widget Testing
 
 ---
 
