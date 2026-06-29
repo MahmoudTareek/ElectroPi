@@ -4,6 +4,8 @@ ElectroPi is a Flutter-based project management application developed as part of
 
 The application allows users to authenticate, manage projects and tasks, update profiles, and interact with data through API integration while providing a responsive and smooth user experience.
 
+---
+
 ## Features
 
 * User Login & Registration
@@ -19,30 +21,103 @@ The application allows users to authenticate, manage projects and tasks, update 
 * Responsive UI
 * State Management using BLoC
 
-## Screenshots
+---
 
-### Application Preview
+# Screenshots
 
-|                       |                       |
-| --------------------- | --------------------- |
-| ![](assets/SS/1.jpg)  | ![](assets/SS/2.jpg)  |
-| ![](assets/SS/3.jpg)  | ![](assets/SS/4.jpg)  |
-| ![](assets/SS/5.jpg)  | ![](assets/SS/6.jpg)  |
-| ![](assets/SS/7.jpg)  | ![](assets/SS/8.jpg)  |
-| ![](assets/SS/9.jpg)  | ![](assets/SS/10.jpg) |
-| ![](assets/SS/11.jpg) | ![](assets/SS/12.jpg) |
-| ![](assets/SS/13.jpg) | ![](assets/SS/14.jpg) |
-| ![](assets/SS/15.jpg) | ![](assets/SS/16.jpg) |
+## Splash Screen
 
-<p align="center">
-  <img src="assets/SS/17.jpg" width="300"/>
-</p>
+<img src="assets/SS/1.jpg" width="300"/>
 
 ---
 
-## Getting Started
+## Onboarding Screen
 
-This project is a starting point for a Flutter application.
+<img src="assets/SS/2.jpg" width="300"/>
+<img src="assets/SS/3.jpg" width="300"/>
+<img src="assets/SS/4.jpg" width="300"/>
+
+---
+
+## Login Screen
+
+<img src="assets/SS/5.jpg" width="300"/>
+
+---
+
+## Register Screen
+
+<img src="assets/SS/6.jpg" width="300"/>
+
+---
+
+## Projects Screen
+
+<img src="assets/SS/7.jpg" width="300"/>
+
+---
+
+## Search
+
+<img src="assets/SS/8.jpg" width="300"/>
+
+---
+
+## Tasks Details Screen
+
+<img src="assets/SS/9.jpg" width="300"/>
+
+---
+
+## Add Task
+
+<img src="assets/SS/10.jpg" width="300"/>
+
+---
+
+## Profile Screen
+
+<img src="assets/SS/11.jpg" width="300"/>
+
+---
+
+## Dark Mode — Login
+
+<img src="assets/SS/12.jpg" width="300"/>
+
+---
+
+## Dark Mode — Register
+
+<img src="assets/SS/13.jpg" width="300"/>
+
+---
+
+## Dark Mode — Projects
+
+<img src="assets/SS/14.jpg" width="300"/>
+
+---
+
+## Dark Mode — Tasks
+
+<img src="assets/SS/15.jpg" width="300"/>
+
+---
+
+## Dark Mode — Add Task
+
+<img src="assets/SS/16.jpg" width="300"/>
+
+---
+
+## Dark Mode — Profile
+
+<img src="assets/SS/17.jpg" width="300"/>
+
+---
+
+# Getting Started
 
 ### Prerequisites
 
@@ -63,25 +138,25 @@ flutter doctor
 
 ## Installation
 
-Clone the repository:
+Clone repository:
 
 ```bash
 git clone https://github.com/MahmoudTareek/ElectroPi.git
 ```
 
-Move to project directory:
+Move to project:
 
 ```bash
 cd ElectroPi
 ```
 
-Install dependencies:
+Install packages:
 
 ```bash
 flutter pub get
 ```
 
-Run the application:
+Run application:
 
 ```bash
 flutter run
@@ -92,23 +167,13 @@ flutter run
 ## Dependencies
 
 ```yaml
-dependencies:
-  flutter:
-    sdk: flutter
-
-  flutter_bloc:
-  dio:
-  shared_preferences:
-  fluttertoast:
-  smooth_page_indicator:
-  webview_flutter:
-  conditional_builder_null_safety:
-```
-
-Install packages:
-
-```bash
-flutter pub get
+flutter_bloc
+dio
+shared_preferences
+fluttertoast
+smooth_page_indicator
+webview_flutter
+conditional_builder_null_safety
 ```
 
 ---
@@ -119,20 +184,10 @@ flutter pub get
 lib
 │
 ├── cubit/
-│   ├── cubit.dart
-│   └── states.dart
-│
 ├── models/
-│
 ├── modules/
-│
 ├── shared/
-│   ├── components.dart
-│   ├── network/
-│   └── styles/
-│
 ├── layout/
-│
 └── main.dart
 ```
 
@@ -148,6 +203,6 @@ lib
 
 ---
 
-For help getting started with Flutter development, view the official documentation:
+Flutter Documentation:
 
 https://docs.flutter.dev/
