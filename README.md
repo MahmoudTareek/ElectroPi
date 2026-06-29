@@ -26,10 +26,6 @@ The application allows users to authenticate, manage projects and tasks, update 
 
 ---
 
-## Download 
-<a href="https://github.com/MahmoudTareek/ElectroPi/releases/latest"><img src="https://img.shields.io/badge/Download-APK-blue?style=for-the-badge"/></a>
-
----
 
 # Screenshots
 
@@ -198,6 +194,11 @@ lib
 ├── layout/
 └── main.dart
 ```
+
+---
+
+## Download 
+<a href="https://github.com/MahmoudTareek/ElectroPi/releases/latest"><img src="https://img.shields.io/badge/Download-APK-blue?style=for-the-badge"/></a>
 
 ---
 
